@@ -2,7 +2,10 @@
   <div id="header">
     <p>{{ currentDate }}</p>
     <p>{{ currentTime }}</p>
-    <img style="width: 150px; margin-left: 150px;" src="/assets/logo_iut.svg" />
+    <div id="DepLogos">
+      <img style="width: 145px; margin-left: 0px !important; margin-right:0;" src="/assets/SGM_White.png" />
+      <img style="width: 135px; margin-left: 15px; margin-right:0;" src="/assets/logo_iut.svg" />
+    </div>
   </div>
 </template>
 
@@ -53,9 +56,8 @@ export default {
   color: rgb(38, 48, 48);
 }
 
-#header > img {
+#header div > img {
   filter: invert(0.7);
-  width: 150px;
 }
 
 #header > p {
@@ -66,5 +68,11 @@ export default {
 
 #header > p:last-of-type {
   font-size: 44px;
+}
+
+#DepLogos {
+  display: flex;
+  flex-direction: row;
+  justify-content: end !important;
 }
 </style>
