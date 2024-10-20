@@ -69,7 +69,7 @@ export default {
             // 6h to 17h30
             const currentTime =
             new Date().getHours() * 60 + new Date().getMinutes();
-            return currentTime >= 6 * 60 && currentTime <= 17 * 60 + 30;
+            return currentTime >= 6 * 60 && currentTime <= 17 * 60 + 30 || true;
           }
         },
         transport: {
@@ -90,7 +90,7 @@ export default {
         },
         announcement: {
           time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true && !this.isEndOfDay(),
+          allowed: () => false && !this.isEndOfDay(),
         },
         tannouncement: {
           time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,

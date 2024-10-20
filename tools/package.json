@@ -8,5 +8,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "ora": "^8.1.0",
+    "prompt-password": "^1.2.0",
+    "puppeteer": "^23.6.0"
+  }
 }

@@ -11,7 +11,7 @@ export default {
       active: false,
       duration: 3000,
       logoSGM: "/assets/SGM_White.png",
-      logoInfo: "/assets/gitpoule.png",
+      logoInfo: "/assets/logo_iut.png",
       currentLogo: null
     };
   },

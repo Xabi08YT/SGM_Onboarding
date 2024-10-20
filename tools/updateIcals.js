@@ -3,13 +3,14 @@ import puppeteer from "puppeteer";
 import ora from "ora";
 import fs from "fs";
 import Prompt from "prompt-password";
+import { setTimeout } from "timers/promises";
 
 // Si le navigateur doit être visible ou non (Headless = tourne en fond)
 const HEADLESS = true;
 
 // Identifiant de promo  à récupérer  sur hyperplanning pour ce semestre
 // L'odre est important
-const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
+const PROMOTIONS = ["SGM S1", "SGM S3", "SGM S5"];
 
 (async () => {
   const result = [];
@@ -47,7 +48,7 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
     "https://hyperplanning.iut.u-bordeaux.fr/etudiant?identifiant=HDxVSaszjxkCS5RX"
   );
 
-  await page.waitForTimeout(1000);
+  await setTimeout(1000);
 
   //#region temp
   // Fill CAS form
@@ -64,7 +65,7 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
   spinner.succeed();
   spinner = ora("Wait for redirect on HP").start();
   // Wait for CAS to redirect to HP
-  await page.waitForTimeout(3000);
+  await setTimeout(3000);
   /////////////////////////////////////////////////////////
 
   //////////// OUVERTURE PAGE PLANNINGS ///////////////////
@@ -90,13 +91,13 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
     await page.keyboard.press("Enter");
 
     // Open dropdown with all classes
-    await page.waitForTimeout(1000);
+    await setTimeout(1000);
     await page.click(
       "div.input-wrapper:last-of-type > div.ocb_cont > div[role=combobox]"
     );
 
     // Get all groups name in an array
-    await page.waitForTimeout(500);
+    await setTimeout(500);
     /////////////////////////////////////////////////////////
 
     //////////// RECUP ICAL GROUPE PAR GROUPE ///////////////
@@ -105,7 +106,7 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
     let groups = await page.$$eval("div.as-li > div", (elements) =>
       elements.map((item) => item.textContent)
     );
-    groups = groups.filter((g) => g.includes("S") || g.includes("UT"));
+    groups = groups.filter((g) => g.includes("SGM") && !g.includes("Fab"));
     spinner.succeed();
     spinner = ora(
       "Closing groups dropdown and starting ical processing"
@@ -114,16 +115,16 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
     await page.click(
       "div.input-wrapper:last-of-type > div.ocb_cont > div[role=combobox]"
     );
-    await page.waitForTimeout(500);
+    await setTimeout(500);
 
     for (let group of groups) {
-      await page.waitForTimeout(1000);
+      await setTimeout(1000);
       spinner.text = `Focusing group ${group} ...`;
 
       await page.click(
         "div.input-wrapper:last-of-type > div.ocb_cont > div[role=combobox]"
       );
-      await page.waitForTimeout(500);
+      await setTimeout(500);
 
       const groupsElements = await page.$$("div.as-li > div");
 
@@ -135,11 +136,11 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
         if (currentName === group) {
           spinner.text = `Fetching group ${group}`;
           ge.click();
-          await page.waitForTimeout(500);
+          await setTimeout(500);
 
           // Open ical popup
           await page.click("tbody > tr > td:nth-of-type(2)");
-          await page.waitForTimeout(500);
+          await setTimeout(500);
 
           // Get URL (Not stable)
           const element = await page.$(
@@ -150,7 +151,7 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
           result.push({
             group,
             ical: url,
-            type: group.includes("UT")
+            type: !group.includes("TP") && !group.includes("TD")
               ? "promo"
               : group.includes("'") || group.includes('"')
               ? "group"
@@ -171,7 +172,7 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
   spinner.text = "Scrapping done (closing)";
   spinner.succeed();
 
-  await page.waitForTimeout(4000);
+  await setTimeout(4000);
   await browser.close();
 
   console.log(result);
@@ -196,9 +197,8 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
     };
     console.log(`Processing promo ${promo.group}`);
     // eslint-disable-next-line quotes
-    const promoClasses = classes.filter((c) =>
-      c.group.includes(promo.group.slice(-2))
-    );
+    const promoClasses = classes.filter((c) => c.group.slice(-2,-1) == promoKey.slice(-1));
+    console.log(promoClasses);
 
     promoClasses.forEach((_class) => {
       console.log(`Processing class ${_class.group}`);
@@ -207,18 +207,12 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
 
       if (
         !(
-          classGroups[0] == undefined ||
-          classGroups[1] == undefined ||
           _class.ical == undefined
         )
       ) {
         icals[promoKey].classes.push({
-          className: _class.group.toLowerCase(),
+          className: _class.group.toLowerCase().replaceAll("sgm ",""),
           classIcal: _class.ical,
-          groups: {
-            prime: classGroups[0].ical,
-            seconde: classGroups[1].ical,
-          },
         });
       }
 
@@ -230,10 +224,12 @@ const PROMOTIONS = ["INFO_BUT_S1", "INFO_BUT_S3", "INFO_BUT_S5"];
       }
     });
   });
+
+  console.log(icals);
   /////////////////////////////////////////////////////////
 
   /////////////// EXPORTATION EN FICHIER //////////////////
-  console.log("File updated in src/icals.json");
+  console.log("File updated in ../icals.json");
   fs.writeFileSync("../icals.json", JSON.stringify(icals, null, 4));
   /////////////////////////////////////////////////////////
 })();

@@ -179,21 +179,11 @@ export const getAllNextCourses = async (icals) => {
     for(let c of icals[promo].classes) {
       let promises = []
       promises.push(getNextCourse(c.classIcal));
-      try {
-        promises.push(getNextCourse(c.groups.prime));
-        promises.push(getNextCourse(c.groups.seconde))
-      } catch(e) {};
       await Promise.all(promises).then(data => {
         classes.push({
           promotion: promo,
           className: c.className,
           nextCourse: JSON.parse(data[0]),
-          groups: c.groups
-            ? {
-              prime: data[1] !== undefined ? JSON.parse(data[1]) : undefined,
-              seconde: data[2] !== undefined ? JSON.parse(data[2]) : undefined,
-            }
-            : [],
         });
       });
     }
