@@ -51,46 +51,47 @@ async function processPlannings(cls) {
   try {
     for (const c of cls) {
       const classEvent = c.nextCourse;
-      if((JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}) && classEvent !== undefined) || (c.className.includes("TP") && !hasTD[c.promotion])) {
+      console.log(c)
+      if((JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}) && classEvent !== undefined) || (c.className.includes("tp") && !hasTD[c.promotion])) {
         switch (c.promotion) {
         case "sgm_but1":
-          if(classEvent.Type.includes("TD")) {
+          if(!classEvent.type == undefined && classEvent.Type.includes("TD")) {
             hasTD.sgm_but1 = true;
           }
           edt.sgm_but1.push({
             className: c.className,
             isFullClass: classEvent !== undefined && JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}),
-            type: classEvent.Type,
-            subject: classEvent.Matiere,
-            teacher: classEvent.Enseignant,
+            type: classEvent.Type ? classEvent.Type : "",
+            subject: classEvent.Matiere ? classEvent.Matiere : "",
+            teacher: classEvent.Enseignant ? classEvent.Enseignant : "",
             room: classEvent.Salle,
           });
           break;
         case "sgm_but2":
-          if(classEvent.Type.includes("TD")) {
-            hasTD.sgm_but2 = true;
+          if(!classEvent.type == undefined && classEvent.Type.includes("TD")) {
+            hasTD.sgm_but1 = true;
           }
           edt.sgm_but2.push({
             className: c.className,
             isFullClass: classEvent !== undefined && JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}),
-            type: classEvent.Type,
-            subject: classEvent.Matiere,
-            teacher: classEvent.Enseignant,
+            type: classEvent.Type ? classEvent.Type : "",
+            subject: classEvent.Matiere ? classEvent.Matiere : "",
+            teacher: classEvent.Enseignant ? classEvent.Enseignant : "",
             room: classEvent.Salle,
           });
           break;
         case "sgm_but3_FI":
         case "sgm_but3_ALT":
         case "sgm_but3":
-          if(classEvent.Type.includes("TD")) {
+          if(!classEvent.type == undefined && classEvent.Type.includes("TD")) {
             hasTD.sgm_but3 = true;
           }
           edt.sgm_but3.push({
             className: c.className,
             isFullClass: classEvent !== undefined && JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}),
-            type: classEvent.Type,
-            subject: classEvent.Matiere,
-            teacher: classEvent.Enseignant,
+            type: classEvent.Type ? classEvent.Type : "",
+            subject: classEvent.Matiere ? classEvent.Matiere : "",
+            teacher: classEvent.Enseignant ? classEvent.Enseignant : "",
             room: classEvent.Salle,
           });
           break;
@@ -137,6 +138,13 @@ onUnmounted(() => clearInterval(refreshInterval));
             :data="data"
           />
         </div>
+        <div class="view-content">
+          <PlanningCard
+            v-for="(data, index) in edt.sgm_but1.slice(2, 4)"
+            :key="index"
+            :data="data"
+          />
+        </div>
       </div>
       <!--Column for BUT2-->
       <div id="c2">
@@ -147,12 +155,26 @@ onUnmounted(() => clearInterval(refreshInterval));
             :data="data"
           />
         </div>
+        <div class="view-content">
+          <PlanningCard
+            v-for="(data, index) in edt.sgm_but2.slice(2, 4)"
+            :key="index"
+            :data="data"
+          />
+        </div>
       </div>
       <!--Column for BUT3-->
       <div id="c3">
         <div class="view-content">
           <PlanningCard
             v-for="(data, index) in edt.sgm_but3.slice(0, 2)"
+            :key="index"
+            :data="data"
+          />
+        </div>
+        <div class="view-content">
+          <PlanningCard
+            v-for="(data, index) in edt.sgm_but3.slice(2, 4)"
             :key="index"
             :data="data"
           />

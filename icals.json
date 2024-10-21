@@ -1,5 +1,5 @@
 {
-    "sgm_s1": {
+    "sgm_but1": {
         "ical": "8E6DB0E24328CFF2577E1F657515F3B6EF2D5622E505C2D9F9DB65DC914753F5FDEEC4A83FE5484DB5C4344ABF1C123B",
         "classes": [
             {
@@ -28,7 +28,7 @@
             }
         ]
     },
-    "sgm_s3": {
+    "sgm_but2": {
         "ical": "36916400D29F36ABF34F505ED73FCF89F15FAB343DD53A17EE2367D86999CFF13C1A903ECB2C6A7C0481CEFCEE55B612",
         "classes": [
             {
@@ -57,7 +57,7 @@
             }
         ]
     },
-    "sgm_s5": {
+    "sgm_but3": {
         "ical": "7EEDDCE9BC40E47469D193F8E9841755D46709F88C7DC67D4B3A59F0C87044294178BE8BCD694468639E44CB5545BB38",
         "classes": [
             {

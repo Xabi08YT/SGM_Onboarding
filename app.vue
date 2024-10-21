@@ -74,7 +74,7 @@ export default {
         },
         transport: {
           time: () => DEVELOPEMENT_MODE ? 10000 : this.getTimeForBusesAndWeather(),
-          allowed: () => true,
+          allowed: () => false,
         },
         weather: {
           time: () => DEVELOPEMENT_MODE ? 10000 : 7 * 1000,
@@ -107,7 +107,7 @@ export default {
 
     isEndOfDay() {
       const currentTime = new Date().getHours() * 60 + new Date().getMinutes();
-      return currentTime > (17 * 60 + 30);
+      return currentTime > (17 * 60 + 30) && false;
     },
 
     /**
