@@ -69,12 +69,12 @@ export default {
             // 6h to 17h30
             const currentTime =
             new Date().getHours() * 60 + new Date().getMinutes();
-            return currentTime >= 6 * 60 && currentTime <= 17 * 60 + 30 || true;
+            return currentTime >= 6 * 60 && currentTime <= 17 * 60 + 30;
           }
         },
         transport: {
           time: () => DEVELOPEMENT_MODE ? 10000 : this.getTimeForBusesAndWeather(),
-          allowed: () => false,
+          allowed: () => true,
         },
         weather: {
           time: () => DEVELOPEMENT_MODE ? 10000 : 7 * 1000,
@@ -107,7 +107,7 @@ export default {
 
     isEndOfDay() {
       const currentTime = new Date().getHours() * 60 + new Date().getMinutes();
-      return currentTime > (17 * 60 + 30) && false;
+      return currentTime > (17 * 60 + 30);
     },
 
     /**
@@ -130,6 +130,7 @@ export default {
       if (nextView === undefined) nextView = viewTypes[0];
       return nextView;
     },
+
     /**
      * Change the actual view
      *
@@ -155,6 +156,7 @@ export default {
         setTimeout(this.changeView, 200);
       }, this.views[this.currentView].time());
     },
+
     /**
      * Return true if the view allowed to be displayed is the Planning only
      * This method is used to ensure that 5 minutes before the end of the each break only the Planning is displayed,
@@ -177,6 +179,7 @@ export default {
           return false;
       }
     },
+    
     /**
      * Return the time in ms before the next view is displayed (after the planning)
      * @return {number}

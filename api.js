@@ -148,7 +148,7 @@ export const getNextCourse = (icalID) => {
       On affiche le cours jusqu'à 30 mn avant sa fin, si on est entre 12 et 14h, alors on affiche celui après la pause
       */
 
-      if(sameDay(currentTime,tstart) && currentTime.getTime() > tstart.getTime() - 30 * 60000 && currentTime.getTime() < tend.getTime() /*- 30 * 60000*/) {
+      if(sameDay(currentTime,tstart) && currentTime.getTime() > tstart.getTime() - 30 * 60000 && currentTime.getTime() < tend.getTime() - 30 * 60000) {
         found = true;
       } else if(sameDay(currentTime,tstart) && currentTime <= tstart && currentTime.getHours() < 14 && currentTime.getMinutes() < 35 && tstart.getHours() == 14 && currentTime.getHours() >= 12) {
         found = true;
