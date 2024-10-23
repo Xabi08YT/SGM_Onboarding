@@ -14,21 +14,21 @@
       <div v-if="group !== undefined" class="data-container">
         <div class="subject-infos">
           <p :style="`font-size: ${isSplited ? '27px' : '20px'}`">
-            {{ classType(group === "seconde" ? 1 : 0) }} - {{ data.subject[group === "seconde" ? 1 : 0] }}
+            {{ data.type ? data.type.slice(1,3) : "" }} - {{ data.subject }}
           </p>
         </div>
       <div class="subject-infos" v-if="isSplited">
           <p class="teacher" :style="`font-size: ${isSplited ? '20px' : '18px'}`">
             {{
-              data.teacher[group === "seconde" ? 1 : 0]
-                ? data.teacher[group === "seconde" ? 1 : 0]
+              data.teacher
+                ? data.teacher
                 : "Pas de prof"
             }}
           </p>
         </div>
         <div class="subject-infos">
           <p class="room" :style="`font-size: ${isSplited ? '45px' : '30px'}`">
-            {{ data.room[group === "seconde" ? 1 : 0] }}
+            {{ data.room ? data.room : ""}}
           </p>
         </div>
       </div>
@@ -85,12 +85,12 @@ export default {
   computed: {
     classColor() {
       const className = this.data.className.toUpperCase();
-      if (className.includes("S1")) return "#FF000077";
-      if (className.includes("S2")) return "#00CCFF99";
-      if (className.includes("S3")) return "#00FF88BB";
-      if (className.includes("S4")) return "#FF00FF77";
-      if (className.includes("S5")) return "#0000FF88";
-      if (className.includes("S6")) return "#FF880088";
+      if (className.slice(-2,-1) == "1") return "#FF000077";
+      if (className.slice(-2,-1) == "2") return "#00CCFF99";
+      if (className.slice(-2,-1) == "3") return "#00FF88BB";
+      if (className.slice(-2,-1) == "4") return "#FF00FF77";
+      if (className.slice(-2,-1) == "5") return "#0000FF88";
+      if (className.slice(-2,-1) == "6") return "#FF880088";
       return "#000000";
     },
     isSplited() {

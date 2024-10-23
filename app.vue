@@ -3,26 +3,6 @@
     <Background ref="background" />
 
     <DateAndHourHeader />
-    <Lundi
-      v-if="Object.keys(views).includes('lundi')"
-      :isActive="currentView == 'lundi'"
-    />
-    <Mardi
-      v-if="Object.keys(views).includes('mardi')"
-      :isActive="currentView == 'mardi'"
-    />
-    <Mercredi
-      v-if="Object.keys(views).includes('mercredi')"
-      :isActive="currentView == 'mercredi'"
-    />
-    <Jeudi
-      v-if="Object.keys(views).includes('jeudi')"
-      :isActive="currentView == 'jeudi'"
-    />
-    <Vendredi
-      v-if="Object.keys(views).includes('vendredi')"
-      :isActive="currentView == 'vendredi'"
-    />
     <Menus
       v-if="Object.keys(views).includes('menus')"
       :isActive="currentView == 'menus'"
@@ -41,29 +21,13 @@
         :isActive="currentView == 'weather'"
       />
     </client-only>
-    <Discord
-      v-if="Object.keys(views).includes('discord')"
-      :isActive="currentView == 'discord'"
-    />
-    <MaintainerProposal
-      v-if="Object.keys(views).includes('maintainer')"
-      :isActive="currentView == 'maintainer'"
-    />
     <Announcement
       v-if="Object.keys(views).includes('announcement')"
       :isActive="currentView == 'announcement'"
     />
-    <Announcement2
-      v-if="Object.keys(views).includes('announcement')"
-      :isActive="currentView == 'announcement2'"
-    />
     <TeacherAnnouncement
       v-if="Object.keys(views).includes('tannouncement')"
       :isActive="currentView == 'tannouncement'"
-    />
-    <WelcomeAmericans
-      v-if="Object.keys(views).includes('welcAmericans')"
-      :isActive="currentView == 'welcAmericans'"
     />
     <LoadingBar :view="views[currentView]" />
     <TransitionOverlay ref="loading" />
@@ -80,19 +44,10 @@ import Menus from "./views/Menus.vue";
 import Transport from "./views/Transport.vue";
 import Weather from "./views/Weather.vue";
 import Planning from "./views/NextPlannings.vue";
-import Discord from "./views/Discord.vue";
-import MaintainerProposal from "./views/MaintainerProposal.vue";
 
 import "./stylesheets/reset.css";
 import Announcement from "./views/Announcement.vue";
-import Announcement2 from "./views/Announcement2.vue";
 import TeacherAnnouncement from "./views/TeacherAnnouncement.vue";
-import WelcomeAmericans from "./views/WelcomeMessage.vue";
-import Lundi from "./views/Lundi.vue";
-import Mardi from "./views/Mardi.vue";
-import Mercredi from "./views/Mercredi.vue";
-import Jeudi from "./views/Jeudi.vue";
-import Vendredi from "./views/Vendredi.vue";
 
 const DEVELOPEMENT_MODE = false;
 
@@ -108,26 +63,6 @@ export default {
 
           The order in the object is the display order
         */
-        lundi: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true && !this.isEndOfDay() && new Date().getDay() === 1,
-        },
-        mardi: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true && !this.isEndOfDay() && new Date().getDay() === 2,
-        },
-        mercredi: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true && !this.isEndOfDay() && new Date().getDay() === 3,
-        },
-        jeudi: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true && !this.isEndOfDay() && new Date().getDay() === 4,
-        },
-        vendredi: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true && !this.isEndOfDay() && new Date().getDay() === 5,
-        },
         planning: {
           time: () => DEVELOPEMENT_MODE ? 5000 : this.returnTimeForPlanning(),
           allowed: () => {
@@ -153,32 +88,14 @@ export default {
             return currentHour >= 6 && currentHour < 14;
           },
         },
-        /* Enable this at the start of each year (The QR code has to be updated)*/
-        discord: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true,
-        },
-        /* Enable when looking for new maintainers */
-        maintainer: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 10,
-          allowed: () => true && !this.isEndOfDay(),
-        },
         announcement: {
           time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true && !this.isEndOfDay(),
-        },
-        announcement2: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => true && !this.isEndOfDay(),
+          allowed: () => false && !this.isEndOfDay(),
         },
         tannouncement: {
           time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
           allowed: () => false && !this.isEndOfDay(),
         },
-        welcAmericans: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => false && !this.isEndOfDay(),
-        }
       },
     };
   },
@@ -213,6 +130,7 @@ export default {
       if (nextView === undefined) nextView = viewTypes[0];
       return nextView;
     },
+
     /**
      * Change the actual view
      *
@@ -238,6 +156,7 @@ export default {
         setTimeout(this.changeView, 200);
       }, this.views[this.currentView].time());
     },
+
     /**
      * Return true if the view allowed to be displayed is the Planning only
      * This method is used to ensure that 5 minutes before the end of the each break only the Planning is displayed,
@@ -260,6 +179,7 @@ export default {
           return false;
       }
     },
+    
     /**
      * Return the time in ms before the next view is displayed (after the planning)
      * @return {number}
@@ -278,22 +198,13 @@ export default {
     Planning,
     TransitionOverlay,
     Background,
-    Lundi,
-    Mardi,
-    Mercredi,
-    Jeudi,
-    Vendredi,
     Menus,
     Transport,
     Weather,
     DateAndHourHeader,
     LoadingBar,
-    Discord,
-    MaintainerProposal,
     Announcement,
-    Announcement2,
     TeacherAnnouncement,
-    WelcomeAmericans,
   },
 };
 </script>

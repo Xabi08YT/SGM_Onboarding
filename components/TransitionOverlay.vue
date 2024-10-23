@@ -10,8 +10,8 @@ export default {
     return {
       active: false,
       duration: 3000,
-      logoIut: "/assets/logo_iut.png",
-      logoGP: "/assets/gitpoule.png",
+      logoSGM: "/assets/SGM_White.png",
+      logoInfo: "/assets/logo_iut.png",
       currentLogo: null
     };
   },
@@ -21,7 +21,7 @@ export default {
      * @default 2000 ms
      */
     show(duration = 2000) {
-      this.currentLogo = Math.random() < 0.05 ? this.logoGP : this.logoIut;
+      this.currentLogo = Math.random() < 0.05 ? this.logoInfo : this.logoSGM;
       this.active = true;
       this.duration = duration;
       setTimeout(() => (this.active = false), duration);

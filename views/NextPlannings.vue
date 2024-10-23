@@ -5,7 +5,7 @@ import PlanningCard from "../components/PlanningCard.vue";
 import icals from "../icals.json";
 
 
-const edt = reactive({info_but1:[], info_but2:[], info_but3:[]});
+const edt = reactive({sgm_but1:[], sgm_but2:[], sgm_but3:[]});
 const delay = 1000 * 60 * 5; // Refresh toutes les 5 minutes
 
 let currentHourRangeStr = "";
@@ -43,116 +43,61 @@ async function getCourses() {
 
 async function processPlannings(cls) {
   console.log("Refreshing plannings");
-  edt.info_but1 = [];
-  edt.info_but2 = [];
-  edt.info_but3 = [];
+  edt.sgm_but1 = [];
+  edt.sgm_but2 = [];
+  edt.sgm_but3 = [];
+  let hasTD = {sgm_but1: false, sgm_but2: false, sgm_but3: false};
   setCurrentHourRange();
   try {
     for (const c of cls) {
-      let primeEvent = c.groups.prime;
-      let secondeEvent = c.groups.seconde;
       const classEvent = c.nextCourse;
-      //Switching between columns depending on the promotion
-      if(classEvent !== undefined && JSON.stringify(classEvent) !== JSON.stringify({"Salle":""})) {
-        primeEvent = classEvent;
-        secondeEvent = classEvent;
-      }
-
-      switch (c.promotion) {
-        case "info_but1":
-          edt.info_but1.push({
+      console.log(c)
+      if((JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}) && classEvent !== undefined) || (c.className.includes("tp") && !hasTD[c.promotion])) {
+        switch (c.promotion) {
+        case "sgm_but1":
+          if(!classEvent.type == undefined && classEvent.Type.includes("TD")) {
+            hasTD.sgm_but1 = true;
+          }
+          edt.sgm_but1.push({
             className: c.className,
             isFullClass: classEvent !== undefined && JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}),
-            type: [
-              primeEvent ? primeEvent.Type : undefined,
-              secondeEvent ? secondeEvent.Type : undefined,
-            ],
-            subject: [
-              primeEvent
-                ? primeEvent.Matiere
-                : undefined,
-              secondeEvent
-                ? secondeEvent.Matiere
-                : undefined,
-            ],
-            teacher: [
-              primeEvent ? primeEvent.Enseignant: undefined,
-              secondeEvent ? secondeEvent.Enseignant: undefined,
-            ],
-            room: [
-              primeEvent
-                ? primeEvent.Salle
-                : undefined,
-              secondeEvent
-                ? secondeEvent.Salle
-                : undefined,
-            ],
+            type: classEvent.Type ? classEvent.Type : "",
+            subject: classEvent.Matiere ? classEvent.Matiere : "",
+            teacher: classEvent.Enseignant ? classEvent.Enseignant : "",
+            room: classEvent.Salle,
           });
           break;
-        case "info_but2":
-          edt.info_but2.push({
+        case "sgm_but2":
+          if(!classEvent.type == undefined && classEvent.Type.includes("TD")) {
+            hasTD.sgm_but1 = true;
+          }
+          edt.sgm_but2.push({
             className: c.className,
-            isFullClass: classEvent !== undefined && classEvent !== {},
-            type: [
-              primeEvent ? primeEvent.Type : undefined,
-              secondeEvent ? secondeEvent.Type : undefined,
-            ],
-            subject: [
-              primeEvent
-                ? primeEvent.Matiere
-                : undefined,
-              secondeEvent
-                ? secondeEvent.Matiere
-                : undefined,
-            ],
-            teacher: [
-              primeEvent ? primeEvent.Enseignant: undefined,
-              secondeEvent ? secondeEvent.Enseignant: undefined,
-            ],
-            room: [
-              primeEvent
-                ? primeEvent.Salle
-                : undefined,
-              secondeEvent
-                ? secondeEvent.Salle
-                : undefined,
-            ],
+            isFullClass: classEvent !== undefined && JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}),
+            type: classEvent.Type ? classEvent.Type : "",
+            subject: classEvent.Matiere ? classEvent.Matiere : "",
+            teacher: classEvent.Enseignant ? classEvent.Enseignant : "",
+            room: classEvent.Salle,
           });
           break;
-        case "info_but3_FI":
-        case "info_but3_ALT":
-        case "info_but3":
-          edt.info_but3.push({
-            className: `[${c.className.split(" ")[1]}] ${c.className.split(" ")[0]}`,
-            isFullClass: classEvent !== undefined && classEvent !== {},
-            type: [
-              primeEvent ? primeEvent.Type : undefined,
-              secondeEvent ? secondeEvent.Type : undefined,
-            ],
-            subject: [
-              primeEvent
-                ? primeEvent.Matiere
-                : undefined,
-              secondeEvent
-                ? secondeEvent.Matiere
-                : undefined,
-            ],
-            teacher: [
-              primeEvent ? primeEvent.Enseignant: undefined,
-              secondeEvent ? secondeEvent.Enseignant: undefined,
-            ],
-            room: [
-              primeEvent
-                ? primeEvent.Salle
-                : undefined,
-              secondeEvent
-                ? secondeEvent.Salle
-                : undefined,
-            ],
+        case "sgm_but3_FI":
+        case "sgm_but3_ALT":
+        case "sgm_but3":
+          if(!classEvent.type == undefined && classEvent.Type.includes("TD")) {
+            hasTD.sgm_but3 = true;
+          }
+          edt.sgm_but3.push({
+            className: c.className,
+            isFullClass: classEvent !== undefined && JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}),
+            type: classEvent.Type ? classEvent.Type : "",
+            subject: classEvent.Matiere ? classEvent.Matiere : "",
+            teacher: classEvent.Enseignant ? classEvent.Enseignant : "",
+            room: classEvent.Salle,
           });
           break;
         default:
           console.log("Unknown promotion.");
+      }
       }
     }
   } catch (e) {
@@ -188,14 +133,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c1">
         <div class="view-content">
           <PlanningCard
-            v-for="(data, index) in edt.info_but1.slice(0, 2)"
+            v-for="(data, index) in edt.sgm_but1.slice(0, 2)"
             :key="index"
             :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-            v-for="(data, index) in edt.info_but1.slice(2, 4)"
+            v-for="(data, index) in edt.sgm_but1.slice(2, 4)"
             :key="index"
             :data="data"
           />
@@ -205,14 +150,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c2">
         <div class="view-content">
           <PlanningCard
-            v-for="(data, index) in edt.info_but2.slice(0, 2)"
+            v-for="(data, index) in edt.sgm_but2.slice(0, 2)"
             :key="index"
             :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-            v-for="(data, index) in edt.info_but2.slice(2, 4)"
+            v-for="(data, index) in edt.sgm_but2.slice(2, 4)"
             :key="index"
             :data="data"
           />
@@ -222,14 +167,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c3">
         <div class="view-content">
           <PlanningCard
-            v-for="(data, index) in edt.info_but3.slice(0, 2)"
+            v-for="(data, index) in edt.sgm_but3.slice(0, 2)"
             :key="index"
             :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-            v-for="(data, index) in edt.info_but3.slice(2, 4)"
+            v-for="(data, index) in edt.sgm_but3.slice(2, 4)"
             :key="index"
             :data="data"
           />
