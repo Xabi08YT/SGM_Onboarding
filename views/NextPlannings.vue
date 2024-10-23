@@ -51,7 +51,6 @@ async function processPlannings(cls) {
   try {
     for (const c of cls) {
       const classEvent = c.nextCourse;
-      console.log(c)
       if((JSON.stringify(classEvent) !== JSON.stringify({"Salle":""}) && classEvent !== undefined) || (c.className.includes("tp") && !hasTD[c.promotion])) {
         switch (c.promotion) {
         case "sgm_but1":
