@@ -111,7 +111,7 @@ const transformDesc = (desc) => {
   }
 
   if(stage4.Salle !== undefined) {
-    stage4.Salle = stage4.Salle.split(" ")[1];
+    stage4.Salle = stage4.Salle.split(" ")[2];
   } else {
     stage4.Salle = "";
   }
