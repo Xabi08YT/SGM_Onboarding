@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <div class="current_infos">
-      <p>{{ this.currentTemperature }}°C</p>
+      <p>{{ currentTemperature }}°C</p>
       <div class="ville-temps">
         <p>Gradignan</p>
-        <p>{{ this.currentWeather }}</p>
+        <p>{{ currentWeather }}</p>
       </div>
     </div>
     <div class="infos-meteo">
