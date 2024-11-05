@@ -3,18 +3,6 @@
     :style="`background-color: ${colors[currentColor]};`"
     id="background-container"
   >
-    <transition
-      v-for="(deco, index) in decorations[currentDecoration] || []"
-      :key="index"
-      :name="deco.transition"
-    >
-      <img
-        v-if="deco.show"
-        :src="deco.svg"
-        :style="deco.posStyle"
-        :class="deco.class"
-      />
-    </transition>
   </div>
 </template>
 

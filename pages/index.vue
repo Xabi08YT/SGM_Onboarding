@@ -1,53 +1,51 @@
 <template>
-  <div class="view-container">
-    <Background ref="background" />
+  <div class="view-container" id="maindiv">
+    <Background ref="background"/>
 
-    <DateAndHourHeader />
+    <DateAndHourHeader/>
     <Menus
-      v-if="Object.keys(views).includes('menus')"
-      :isActive="currentView == 'menus'"
+        v-if="Object.keys(views).includes('menus')"
+        :isActive="currentView == 'menus'"
     />
     <Planning
         v-if="Object.keys(views).includes('planning')"
         :isActive="currentView == 'planning'"
-      />
-    <client-only>
-      <Transport
+    />
+    <Transport
         v-if="Object.keys(views).includes('transport')"
         :isActive="currentView == 'transport'"
-      />
-      <Weather
+    />
+    <Weather
         v-if="Object.keys(views).includes('weather')"
         :isActive="currentView == 'weather'"
-      />
-    </client-only>
+    />
     <Announcement
-      v-if="Object.keys(views).includes('announcement')"
-      :isActive="currentView == 'announcement'"
+        v-if="Object.keys(views).includes('announcement')"
+        :isActive="currentView == 'announcement'"
     />
     <TeacherAnnouncement
-      v-if="Object.keys(views).includes('tannouncement')"
-      :isActive="currentView == 'tannouncement'"
+        v-if="Object.keys(views).includes('tannouncement')"
+        :isActive="currentView == 'tannouncement'"
     />
-    <LoadingBar :view="views[currentView]" />
-    <TransitionOverlay ref="loading" />
+    <LoadingBar :view="views[currentView]"/>
+    <TransitionOverlay ref="loading"/>
   </div>
 </template>
 
 <script>
-import DateAndHourHeader from "./components/DateHourHeader.vue";
-import TransitionOverlay from "./components/TransitionOverlay.vue";
-import Background from "./components/Background.vue";
-import LoadingBar from "./components/LoadingBar.vue";
+import DateAndHourHeader from "../components/DateHourHeader.vue";
+import TransitionOverlay from "../components/TransitionOverlay.vue";
+import Background from "../components/Background.vue";
+import LoadingBar from "../components/LoadingBar.vue";
 
-import Menus from "./views/Menus.vue";
-import Transport from "./views/Transport.vue";
-import Weather from "./views/Weather.vue";
-import Planning from "./views/NextPlannings.vue";
+import Menus from "../views/Menus.vue";
+import Transport from "../views/Transport.vue";
+import Weather from "../views/Weather.vue";
+import Planning from "../views/NextPlannings.vue";
 
-import "./stylesheets/reset.css";
-import Announcement from "./views/Announcement.vue";
-import TeacherAnnouncement from "./views/TeacherAnnouncement.vue";
+import "../stylesheets/reset.css";
+import Announcement from "../views/Announcement.vue";
+import TeacherAnnouncement from "../views/TeacherAnnouncement.vue";
 
 const DEVELOPEMENT_MODE = false;
 
@@ -68,7 +66,7 @@ export default {
           allowed: () => {
             // 6h to 17h30
             const currentTime =
-            new Date().getHours() * 60 + new Date().getMinutes();
+                new Date().getHours() * 60 + new Date().getMinutes();
             return currentTime >= 6 * 60 && currentTime <= 17 * 60 + 30;
           }
         },
@@ -115,7 +113,7 @@ export default {
      */
     getTimeForBusesAndWeather() {
       const currentTime = new Date().getHours() * 60 + new Date().getMinutes();
-      if(currentTime > 17 * 60 + 30) {
+      if (currentTime > 17 * 60 + 30) {
         return 60000;
       }
       return 7000;
@@ -139,15 +137,15 @@ export default {
     changeView() {
       this.currentView = this.getNextViewName();
       if (
-        this.views[this.currentView].allowed() === false &&
-        !DEVELOPEMENT_MODE
+          this.views[this.currentView].allowed() === false &&
+          !DEVELOPEMENT_MODE
       ) {
         this.changeView();
         return;
       }
 
       if (Object.keys(this.views).length <= 1)
-        //Detect we've commented all views except one
+          //Detect we've commented all views except one
         return; // (Disable slide show)
 
       setTimeout(() => {
@@ -179,7 +177,6 @@ export default {
           return false;
       }
     },
-    
     /**
      * Return the time in ms before the next view is displayed (after the planning)
      * @return {number}
