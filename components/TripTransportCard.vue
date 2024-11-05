@@ -9,7 +9,7 @@
         :fill-color="busData.lineColor"
         empty-color="#ddd"
       />
-      <p v-if="this.error == 0">
+      <p v-if="error == 0">
         {{ msToWaitTime(remainingTime)[0]
         }}<span>m</span
         >{{ msToWaitTime(remainingTime)[1]
