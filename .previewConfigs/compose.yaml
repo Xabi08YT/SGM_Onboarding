@@ -3,7 +3,7 @@ networks:
     external: true
 
 services:
-  previewInfo:
+  previewSGM:
     container_name: sgmpreview
     image: onboarding-sgm-preview:latest
     restart: unless-stopped
