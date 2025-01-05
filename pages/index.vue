@@ -11,16 +11,14 @@
         v-if="Object.keys(views).includes('planning')"
         :isActive="currentView == 'planning'"
     />
-    <client-only>
-      <Transport
-          v-if="Object.keys(views).includes('transport')"
-          :isActive="currentView == 'transport'"
-      />
-      <Weather
-          v-if="Object.keys(views).includes('weather')"
-          :isActive="currentView == 'weather'"
-      />
-    </client-only>
+    <Transport
+        v-if="Object.keys(views).includes('transport')"
+        :isActive="currentView == 'transport'"
+    />
+    <Weather
+        v-if="Object.keys(views).includes('weather')"
+        :isActive="currentView == 'weather'"
+    />
     <Announcement
         v-if="Object.keys(views).includes('announcement')"
         :isActive="currentView == 'announcement'"
@@ -48,7 +46,6 @@ import Planning from "../views/NextPlannings.vue";
 import "../stylesheets/reset.css";
 import Announcement from "../views/Announcement.vue";
 import TeacherAnnouncement from "../views/TeacherAnnouncement.vue";
-import ClientOnly from "../.output/server/chunks/build/server.mjs";
 
 const DEVELOPEMENT_MODE = false;
 
@@ -195,7 +192,6 @@ export default {
     this.changeView();
   },
   components: {
-    ClientOnly,
     Planning,
     TransitionOverlay,
     Background,
