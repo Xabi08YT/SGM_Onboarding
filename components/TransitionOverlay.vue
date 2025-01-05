@@ -5,13 +5,15 @@
 </template>
 
 <script>
+import SGMWhite from "@/public/assets/SGM_White.png";
+import logoInfo from "@/public/assets/logo_iut.png";
 export default {
   data() {
     return {
       active: false,
       duration: 3000,
-      logoSGM: "/assets/SGM_White.png",
-      logoInfo: "/assets/logo_iut.png",
+      logoSGM: SGMWhite,
+      logoInfo,
       currentLogo: null
     };
   },
