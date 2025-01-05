@@ -21,7 +21,7 @@ jobs:
             rm -rf preview-sgm
             podman image rm 
             echo "Cloning preview..."
-            git clone https://github.com/Xabi08YT/SGM-Onboarding.git preview-sgm
+            git clone https://github.com/Xabi08YT/SGM_Onboarding.git preview-sgm
             echo "Using correct folder..."
             cd preview-sgm
             echo "Switching to right PR..."
