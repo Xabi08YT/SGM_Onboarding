@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import robot from "@/public/assets/robot.png";
 export default {
   props: {
     data: {
@@ -52,7 +53,7 @@ export default {
   },
   data() {
     return {
-      noClassLogo: "/assets/robot.png",
+      noClassLogo: robot,
     };
   },
   methods: {
@@ -64,8 +65,8 @@ export default {
       )
         return [undefined];
       if (this.data.isFullClass) return [""];
-      if (this.data.subject[0] === undefined) return ["seconde"];
-      if (this.data.subject[1] === undefined) return ["prime"];
+      if (this.data.subject[0] === undefined) return ["SC 2"];
+      if (this.data.subject[1] === undefined) return ["SC 1"];
       return ["prime", "seconde"]; // Prime et seconde ont cours en même temps
     },
     getClassNameComponent(group = undefined) {

@@ -4,7 +4,7 @@ import PlanningCard from "../components/PlanningCard.vue";
 import icals from "../icals.json";
 import {HyperplanningScheduler} from "@xabi08yt/iutgradignanhpscheduler";
 
-const edt = reactive({info_but1: [], info_but2: [], info_but3: []});
+const edt = reactive({sgm_but1: [], sgm_but2: [], sgm_but3: []});
 const delay = 1000 * 60 * 5; // Refresh toutes les 5 minutes
 
 let currentHourRangeStr = "";
@@ -44,10 +44,10 @@ let generateGroupsSchedulers = () => {
   let But3_done = false;
   Object.keys(icals).forEach((promo) => {
     if (
-      promo === "info_but3_ALT" ||
-        (promo === "info_but3_FI" && !But3_done)
+      promo === "sgm_but3_ALT" ||
+        (promo === "sgm_but3_FI" && !But3_done)
     ) {
-      promos.push("info_but3");
+      promos.push("sgm_but3");
     }
     icals[promo].classes.forEach((c) => {
       classes.push({
@@ -92,9 +92,9 @@ let nextEventFilter = (event) => {
 let getAllPlannings = async () => {
   console.log("Refreshing plannings");
   setCurrentHourRange();
-  edt.info_but1 = [];
-  edt.info_but2 = [];
-  edt.info_but3 = [];
+  edt.sgm_but1 = [];
+  edt.sgm_but2 = [];
+  edt.sgm_but3 = [];
   try {
     for (const c of classes) {
       let primeEvent;
@@ -116,8 +116,8 @@ let getAllPlannings = async () => {
 
       //Switching between columns depending on the promotion
       switch (c.promotion) {
-        case "info_but1":
-          edt.info_but1.push({
+        case "sgm_but1":
+          edt.sgm_but1.push({
             className: c.className,
             isFullClass: classEvent !== undefined,
             type: [
@@ -146,8 +146,8 @@ let getAllPlannings = async () => {
             ],
           });
           break;
-        case "info_but2":
-          edt.info_but2.push({
+        case "sgm_but2":
+          edt.sgm_but2.push({
             className: c.className,
             isFullClass: classEvent !== undefined,
             type: [
@@ -176,11 +176,11 @@ let getAllPlannings = async () => {
             ],
           });
           break;
-        case "info_but3_FI":
-        case "info_but3_ALT":
-        case "info_but3":
+        case "sgm_but3_FI":
+        case "sgm_but3_ALT":
+        case "sgm_but3":
 
-          edt.info_but3.push({
+          edt.sgm_but3.push({
             className: `[${c.className.split(" ")[1]}] ${c.className.split(" ")[0]}`,
             isFullClass: classEvent !== undefined,
             type: [
@@ -215,18 +215,18 @@ let getAllPlannings = async () => {
     }
   } catch (e) {
     console.error("Failed to fetch plannings", e);
-    edt.info_but1 = [];
-    edt.info_but2 = [];
-    edt.info_but3 = [];
+    edt.sgm_but1 = [];
+    edt.sgm_but2 = [];
+    edt.sgm_but3 = [];
     // eslint-disable-next-line prefer-template
     currentHourRangeStr = "Si si tu as cours, c'est juste un bug :)";
   }
 };
 
 let refresh = async () => {
-  edt.info_but1 = [];
-  edt.info_but2 = [];
-  edt.info_but3 = [];
+  edt.sgm_but1 = [];
+  edt.sgm_but2 = [];
+  edt.sgm_but3 = [];
   setCurrentHourRange();
   getAllPlannings();
 };
@@ -251,14 +251,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c1">
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.info_but1.slice(0, 2)"
+              v-for="(data, index) in edt.sgm_but1.slice(0, 2)"
               :key="index"
               :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.info_but1.slice(2, 4)"
+              v-for="(data, index) in edt.sgm_but1.slice(2, 4)"
               :key="index"
               :data="data"
           />
@@ -268,14 +268,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c2">
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.info_but2.slice(0, 2)"
+              v-for="(data, index) in edt.sgm_but2.slice(0, 2)"
               :key="index"
               :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.info_but2.slice(2, 4)"
+              v-for="(data, index) in edt.sgm_but2.slice(2, 4)"
               :key="index"
               :data="data"
           />
@@ -285,14 +285,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c3">
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.info_but3.slice(0, 2)"
+              v-for="(data, index) in edt.sgm_but3.slice(0, 2)"
               :key="index"
               :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.info_but3.slice(2, 4)"
+              v-for="(data, index) in edt.sgm_but3.slice(2, 4)"
               :key="index"
               :data="data"
           />
