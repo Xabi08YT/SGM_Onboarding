@@ -52,6 +52,8 @@ const DEVELOPEMENT_MODE = false;
 export default {
   data() {
     return {
+      i: 0,
+      nextIndex: 0,
       currentView: "planning",
       views: {
         /*
@@ -88,11 +90,11 @@ export default {
         },
         announcement: {
           time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => false && !this.isEndOfDay(),
+          allowed: () => true && !this.isEndOfDay(),
         },
         tannouncement: {
           time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => false && !this.isEndOfDay(),
+          allowed: () => true && !this.isEndOfDay(),
         },
       },
     };
@@ -124,7 +126,29 @@ export default {
      */
     getNextViewName() {
       const viewTypes = Object.keys(this.views);
-      let nextView = viewTypes[viewTypes.indexOf(this.currentView) + 1];
+
+      if(this.isEndOfDay()) {
+        console.log("Hey");
+        let nextView = viewTypes[viewTypes.indexOf(this.currentView) + 1];
+        if (nextView === undefined) nextView = viewTypes[0];
+        return nextView;
+      }
+
+      ++this.i;
+      this.i %= 2;
+      let nextView = undefined;
+
+      if(this.i === 1) {
+        this.nextIndex = viewTypes.indexOf(this.currentView) + 1;
+        nextView = viewTypes[0];
+      } else {
+        nextView = viewTypes[this.nextIndex];
+      }
+      if (this.views[nextView].allowed() === false) {
+        this.i = 1;
+        this.nextIndex = viewTypes.indexOf(this.currentView) + 1;
+        nextView = this.getNextViewName();
+      }
       if (nextView === undefined) nextView = viewTypes[0];
       return nextView;
     },
@@ -137,7 +161,7 @@ export default {
     changeView() {
       this.currentView = this.getNextViewName();
       if (
-          this.views[this.currentView].allowed() === false &&
+        this.views[this.currentView].allowed() === false &&
           !DEVELOPEMENT_MODE
       ) {
         this.changeView();
@@ -145,7 +169,7 @@ export default {
       }
 
       if (Object.keys(this.views).length <= 1)
-          //Detect we've commented all views except one
+      //Detect we've commented all views except one
         return; // (Disable slide show)
 
       setTimeout(() => {
