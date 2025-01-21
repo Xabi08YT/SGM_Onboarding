@@ -14,7 +14,7 @@
       <div v-if="group !== undefined" class="data-container">
         <div class="subject-infos">
           <p :style="`font-size: ${isSplited ? '27px' : '20px'}`">
-            {{ data.type ? data.type.slice(1,3) : "" }} - {{ data.subject }}
+            {{ data.type ? data.type : "" }} - {{ data.subject }}
           </p>
         </div>
       <div class="subject-infos" v-if="isSplited">
@@ -86,12 +86,12 @@ export default {
   computed: {
     classColor() {
       const className = this.data.className.toUpperCase();
-      if (className.slice(-2,-1) == "1") return "#FF000077";
-      if (className.slice(-2,-1) == "2") return "#00CCFF99";
-      if (className.slice(-2,-1) == "3") return "#00FF88BB";
-      if (className.slice(-2,-1) == "4") return "#FF00FF77";
-      if (className.slice(-2,-1) == "5") return "#0000FF88";
-      if (className.slice(-2,-1) == "6") return "#FF880088";
+      if (className.slice(-1) == "1") return "#FF000077";
+      if (className.slice(-1) == "2") return "#00CCFF99";
+      if (className.slice(-1) == "3") return "#00FF88BB";
+      if (className.slice(-1) == "4") return "#FF00FF77";
+      if (className.slice(-1) == "5") return "#0000FF88";
+      if (className.slice(-1) == "6") return "#FF880088";
       return "#000000";
     },
     isSplited() {

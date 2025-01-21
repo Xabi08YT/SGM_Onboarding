@@ -7,12 +7,12 @@ import {HyperplanningScheduler} from "@xabi08yt/iutgradignanhpscheduler";
 const edt = reactive({sgm_but1: [], sgm_but2: [], sgm_but3: []});
 const delay = 1000 * 60 * 5; // Refresh toutes les 5 minutes
 
-let currentHourRangeStr = "";
 let refreshInterval = undefined;
 let promos;
 let proxyUrl = "/api/hp/";
-let classes = [];
+let classes = {};
 let version = "2024.0.9.0";
+let pageTitle = "pageTitle";
 
 const props = defineProps({
   isActive: Boolean,
@@ -22,26 +22,10 @@ const components = defineComponent({
   PlanningCard
 });
 
-function setCurrentHourRange() {
-  const currentTime = new Date().getHours() * 60 + new Date().getMinutes();
-  if (currentTime < 9 * 60 + 45) {
-    // < 09h30
-    currentHourRangeStr = "8h15 - 10h00";
-  } else if (currentTime < 11 * 60 + 30) {
-    // < 11h30
-    currentHourRangeStr = "10h25 - 12h15";
-  } else if (currentTime < 15 * 60 + 30) {
-    // < 15h30
-    currentHourRangeStr = "14h00 - 15h50";
-  } else {
-    // > 15h30
-    currentHourRangeStr = "16h10 - 18h00";
-  }
-}
-
 let generateGroupsSchedulers = () => {
   promos = [];
   let But3_done = false;
+  let i = 0;
   Object.keys(icals).forEach((promo) => {
     if (
       promo === "sgm_but3_ALT" ||
@@ -49,23 +33,35 @@ let generateGroupsSchedulers = () => {
     ) {
       promos.push("sgm_but3");
     }
-    icals[promo].classes.forEach((c) => {
-      classes.push({
-        promotion: promo,
-        className: c.className,
-        classIcal: new HyperplanningScheduler(c.classIcal, {proxyUrl, version}),
-        groups: c.groups
-          ? {
-            prime: new HyperplanningScheduler(c.groups.prime, {
-              proxyUrl,
-              version,
-            }),
-            seconde: new HyperplanningScheduler(c.groups.seconde, {
-              proxyUrl,
-              version,
-            }),
-          }
-          : [],
+
+    classes[promo] = {
+      ical: new HyperplanningScheduler(icals[promo].ical, {proxyUrl, version}),
+      td: [],
+      tp: [],
+      tpfab: []
+    };
+
+    icals[promo].td.map((group, index) => {
+      if (group.ical === "") return;
+      classes[promo].td.push({
+        className: `TD ${i} ${index}`,
+        ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
+      });
+    });
+
+    icals[promo].tp.map((group, index) => {
+      if (group.ical === "") return;
+      classes[promo].tp.push({
+        className: `TP ${i} ${index} SC`,
+        ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
+      });
+    });
+
+    icals[promo].tpfab.map((group, index) => {
+      if (group.ical === "") return;
+      classes[promo].tpfab.push({
+        className: `TP ${i} ${index} FAB`,
+        ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
       });
     });
   });
@@ -80,161 +76,127 @@ let nextEventFilter = (event) => {
       event.dateEnd.getHours() * 60 + event.dateEnd.getMinutes();
 
   // Cas spécial -> afficher les cours de 14h entre 11h30 et 13h30
-  if (currentTime > 11 * 60 + 30 && currentTime < 13 * 60 + 30)
-    currentTime += 2 * 60; // On fais croire qu'il est h+2, soit entre 13h30 et 15h30
+  if (currentTime > 12 * 60 && currentTime < 13 * 60 + 45)
+    currentTime = 14 * 60;
+
+  if (currentTime < 8 * 60 + 15) {
+    currentTime = 8 * 60 + 15;
+  }
 
   // Display this event 30min before it starts and stop displaying it 30 mins before it ends.
   return (
-    currentTime > eventStartTime - 30 && currentTime < eventEndTime - 30
+    currentTime > eventStartTime - 15 && currentTime < eventEndTime - 15
   );
 };
 
 let getAllPlannings = async () => {
   console.log("Refreshing plannings");
-  setCurrentHourRange();
   edt.sgm_but1 = [];
   edt.sgm_but2 = [];
   edt.sgm_but3 = [];
   try {
-    for (const c of classes) {
-      let primeEvent;
-      let secondeEvent;
-      const classEvent = await c.classIcal
-        .getEvents()
-        .then((events) => events.find(nextEventFilter));
-      // eslint-disable-next-line eqeqeq,no-constant-binary-expression
-      if (!c.groups === undefined) {
-        primeEvent = await c.groups.prime
-          .getEvents()
-          .then((events) => events.find(nextEventFilter));
-        secondeEvent = await c.groups.seconde
-          .getEvents()
-          .then((events) => events.find(nextEventFilter));
+    for (const c of Object.keys(classes)) {
+      // Mappage des events
+      let eventPromo = await classes[c].ical.getEvents().then(events => events.find(nextEventFilter));
+      let eventsTD = [];
+      let eventsTP = [];
+      let eventsTPFab = [];
+
+      classes[c].td.forEach((g) => {
+        g.ical.getEvents().then(events => events.find(nextEventFilter)).then(e => eventsTD.push(e));
+      });
+
+      classes[c].tp.forEach((g) => {
+        g.ical.getEvents().then(events => events.find(nextEventFilter)).then(e => eventsTP.push(e));
+      });
+
+      classes[c].tpfab.forEach((g) => {
+        g.ical.getEvents().then(events => events.find(nextEventFilter)).then(e => eventsTPFab.push(e));
+      });
+
+      console.log(eventsTD);
+      console.log(eventsTD.length);
+      console.log(eventsTP);
+      console.log(eventsTPFab);
+
+      if (eventPromo !== undefined) {
+        edt[c].push({
+          className: c.toString().toUpperCase().replaceAll("_", " ").slice(-4),
+          isFullClass: true,
+          type: "PROMOTION",
+          subject: eventPromo.subject,
+          teacher: eventPromo.teachers.join(" - "),
+          room: eventPromo.locations[0].split(" ")[1],
+        });
       }
 
-      if (classEvent !== undefined) primeEvent = classEvent;
+      eventsTD.forEach((e) => {
+        if (e === undefined) return;
+        edt[c].push({
+          className: e.className,
+          isFullClass: true,
+          type: "TD",
+          subject: e.subject,
+          teacher: e.teachers.join(" - "),
+          room: e.locations[0].split(" ")[1],
+        });
+      });
+      let coupledTPFabs = [];
+      let couple = [null, null];
 
-      //Switching between columns depending on the promotion
-      switch (c.promotion) {
-        case "sgm_but1":
-          edt.sgm_but1.push({
-            className: c.className,
-            isFullClass: classEvent !== undefined,
-            type: [
-              primeEvent ? primeEvent.type : undefined,
-              secondeEvent ? secondeEvent.type : undefined,
-            ],
-            subject: [
-              primeEvent
-                ? primeEvent.subject.split(" ").slice(1).join(" ")
-                : undefined,
-              secondeEvent
-                ? secondeEvent.subject.split(" ").slice(1).join(" ")
-                : undefined,
-            ],
-            teacher: [
-              primeEvent ? primeEvent.teachers.join(" - ") : undefined,
-              secondeEvent ? secondeEvent.teachers.join(" - ") : undefined,
-            ],
-            room: [
-              primeEvent
-                ? primeEvent.locations[0].split(" ")[0]
-                : undefined,
-              secondeEvent
-                ? secondeEvent.locations[0].split(" ")[0]
-                : undefined,
-            ],
-          });
-          break;
-        case "sgm_but2":
-          edt.sgm_but2.push({
-            className: c.className,
-            isFullClass: classEvent !== undefined,
-            type: [
-              primeEvent ? primeEvent.type : undefined,
-              secondeEvent ? secondeEvent.type : undefined,
-            ],
-            subject: [
-              primeEvent
-                ? primeEvent.subject.split(" ").slice(1).join(" ")
-                : undefined,
-              secondeEvent
-                ? secondeEvent.subject.split(" ").slice(1).join(" ")
-                : undefined,
-            ],
-            teacher: [
-              primeEvent ? primeEvent.teachers.join(" - ") : undefined,
-              secondeEvent ? secondeEvent.teachers.join(" - ") : undefined,
-            ],
-            room: [
-              primeEvent
-                ? primeEvent.locations[0].split(" ")[0]
-                : undefined,
-              secondeEvent
-                ? secondeEvent.locations[0].split(" ")[0]
-                : undefined,
-            ],
-          });
-          break;
-        case "sgm_but3_FI":
-        case "sgm_but3_ALT":
-        case "sgm_but3":
-
-          edt.sgm_but3.push({
-            className: `[${c.className.split(" ")[1]}] ${c.className.split(" ")[0]}`,
-            isFullClass: classEvent !== undefined,
-            type: [
-              primeEvent ? primeEvent.type : undefined,
-              secondeEvent ? secondeEvent.type : undefined,
-            ],
-            subject: [
-              primeEvent
-                ? primeEvent.subject.split(" ").slice(1).join(" ")
-                : undefined,
-              secondeEvent
-                ? secondeEvent.subject.split(" ").slice(1).join(" ")
-                : undefined,
-            ],
-            teacher: [
-              primeEvent ? primeEvent.teachers.join(" - ") : undefined,
-              secondeEvent ? secondeEvent.teachers.join(" - ") : undefined,
-            ],
-            room: [
-              primeEvent
-                ? primeEvent.locations[0].split(" ")[0]
-                : undefined,
-              secondeEvent
-                ? secondeEvent.locations[0].split(" ")[0]
-                : undefined,
-            ],
-          });
-          break;
-        default:
-          console.log("Unknown promotion.");
+      for (let i = 0; i < eventsTPFab.length; i += 2) {
+        couple[0] = eventsTPFab[i];
+        couple[1] = eventsTPFab[i + 1];
+        coupledTPFabs.push(couple);
       }
+
+      coupledTPFabs.forEach((e) => {
+        if (e === undefined || e[0] === undefined || e[1] === undefined) return;
+        edt[c].push({
+          className: e[0].className,
+          isFullClass: false,
+          type: "TP",
+          subject: [e[0].subject, e[1].subject],
+          teacher: [e[0].teachers.join(" - "), e[1].teachers.join(" - ")],
+          room: [e[0].locations[0].split(" ")[1], e[1].locations[0].split(" ")[1]],
+        });
+      });
+
+      eventsTP.forEach((e) => {
+        edt[c].push({
+          className: e.className,
+          isFullClass: true,
+          type: "TP",
+          subject: e.subject,
+          teacher: e.teachers.join(" - "),
+          room: e.locations[0].split(" ")[1],
+        });
+      });
     }
-  } catch (e) {
+
+  } catch
+  (e) {
     console.error("Failed to fetch plannings", e);
     edt.sgm_but1 = [];
     edt.sgm_but2 = [];
     edt.sgm_but3 = [];
-    // eslint-disable-next-line prefer-template
-    currentHourRangeStr = "Si si tu as cours, c'est juste un bug :)";
+    pageTitle = "Si si tu as cours, c'est juste un bug :)";
   }
-};
+}
+;
 
 let refresh = async () => {
+  pageTitle = "Prochains cours (affiché 15mn avant)";
   edt.sgm_but1 = [];
   edt.sgm_but2 = [];
   edt.sgm_but3 = [];
-  setCurrentHourRange();
-  getAllPlannings();
+  await getAllPlannings();
 };
 
 onMounted(async () => {
-  setCurrentHourRange();
+  pageTitle = "Prochains cours (affiché 15mn avant)";
   generateGroupsSchedulers();
-  getAllPlannings();
+  await getAllPlannings();
   refreshInterval = setInterval(await refresh, delay);
 });
 
@@ -244,7 +206,7 @@ onUnmounted(() => clearInterval(refreshInterval));
 <template>
   <div v-show="isActive" class="view-container">
     <h1 class="view-title">
-      {{ currentHourRangeStr }}
+      {{ pageTitle }}
     </h1>
     <div id="columns">
       <!--Column for BUT1-->
