@@ -86,7 +86,7 @@ let nextEventFilter = (event) => {
 
   // Display this event 30min before it starts and stop displaying it 30 mins before it ends.
   return (
-    currentTime > eventStartTime - 15 && currentTime < eventEndTime - 15
+    currentTime > eventStartTime - 15 && currentTime < eventEndTime
   );
 };
 
@@ -118,6 +118,7 @@ let getAllPlannings = async () => {
       console.log(eventsTD);
       console.log(eventsTP);
       console.log(eventsTPFab);
+      console.log(classes);
 
       if (eventPromo !== undefined) {
         edt[c].push({
@@ -128,7 +129,7 @@ let getAllPlannings = async () => {
           teacher: eventPromo.teachers.join(" - "),
           room: eventPromo.locations[0].split(" ")[1],
         });
-        //continue;
+        continue;
       }
 
       if (eventsTD.filter(v => v !== undefined ).length > 0) {
@@ -140,7 +141,7 @@ let getAllPlannings = async () => {
             type: "TD",
             subject: e.subject,
             teacher: e.teachers.join(" - "),
-            room: e.locations[0].split(" ")[1],
+            room: e.locations[0] ? e.locations[0].split(" ")[1] : "",
           });
         });
       }
@@ -163,19 +164,20 @@ let getAllPlannings = async () => {
             type: "TP",
             subject: [e[0] ? e[0].subject : undefined, e[1] ? e[1].subject : undefined],
             teacher: [e[0] ? e[0].teachers ? e[0].teachers.join(" - ") : "Pas de prof" : "", e[1] ? e[1].teachers ? e[1].teachers.join(" - ") : "Pas de prof" : ""],
-            room: [e[0] ? e[0].locations[0] ? e[0].locations[0].split(" ")[1] : "-" : "", e[1] ? e[1].locations[0] ? e[1].locations[0].split(" ")[1] : "-" : ""],
+            room: [e[0] ? e[0].locations[0] ? e[0].locations[0].split(" ")[1] : "" : "", e[1] ? e[1].locations[0] ? e[1].locations[0].split(" ")[1] : "-" : ""],
           });
         });
       }
 
       eventsTP.forEach((e) => {
+        if(e === undefined) return;
         edt[c].push({
           className: classes[c].tp[eventsTP.indexOf(e)].className,
           isFullClass: true,
           type: "TP",
           subject: e ? e.subject : "",
           teacher: e ? e.teachers ? e.teachers.join(" - ") : "Pas de prof" : "",
-          room: e ? e.locations[0] ? e.locations[0].split(" ")[1] : "-" : "",
+          room: e ? e.locations[0] ? e.locations[0].split(" ")[1] : "" : "",
         });
       });
     }

@@ -100,5 +100,50 @@
         "ical": ""
       }
     ]
+  },
+  "sgm_but_3": {
+    "ical": "7EEDDCE9BC40E47469D193F8E9841755D46709F88C7DC67D4B3A59F0C87044294178BE8BCD694468639E44CB5545BB38",
+    "td": [
+      {
+        "ical": "B7D543EDFB33FC23E561902A85036A21BB460006EB64C6FDD32301592A9C837F79E6B33845F973A048100E23900EBA7F"
+      }
+    ],
+    "tp": [
+      {
+        "ical": "3FBC4014F8A9A789460FA14F7ED2F14984C2428D844CAA04142E90509A7008D19DCF41324CC6475FD6EECA194EF533AF"
+      },
+      {
+        "ical": "69FD8BBF1F3A4491324C33FA65AB690C0F3462A7A5A3537E20B384D65C8805EB4072BB3B617FC6759EC73BFE7F68823B"
+      },
+      {
+        "ical": "11903D608DBECC145E02241BCFF6408FC21FD3BB77572AB127F3605C3C31D0381EE239526B925B963083CEA69EF705D1"
+      }
+    ],
+    "tpfab": [
+      {
+        "ical": ""
+      },
+      {
+        "ical": ""
+      },
+      {
+        "ical": ""
+      },
+      {
+        "ical": ""
+      },
+      {
+        "ical": ""
+      },
+      {
+        "ical": ""
+      },
+      {
+        "ical": ""
+      },
+      {
+        "ical": ""
+      }
+    ]
   }
 }
