@@ -4,7 +4,7 @@ import PlanningCard from "../components/PlanningCard.vue";
 import icals from "../icals.json";
 import {HyperplanningScheduler} from "@xabi08yt/iutgradignanhpscheduler";
 
-const edt = reactive({sgm_but1: [], sgm_but2: [], sgm_but3: []});
+const edt = reactive({sgm_but_1: [], sgm_but_2: [], sgm_but3: []});
 const delay = 1000 * 60 * 5; // Refresh toutes les 5 minutes
 
 let refreshInterval = undefined;
@@ -44,7 +44,7 @@ let generateGroupsSchedulers = () => {
     icals[promo].td.map((group, index) => {
       if (group.ical === "") return;
       classes[promo].td.push({
-        className: `TD ${i} ${index}`,
+        className: `TD - ${index+1} S${i+1}`,
         ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
       });
     });
@@ -52,7 +52,7 @@ let generateGroupsSchedulers = () => {
     icals[promo].tp.map((group, index) => {
       if (group.ical === "") return;
       classes[promo].tp.push({
-        className: `TP ${i} ${index} SC`,
+        className: `S ${i+1} TP SC ${index+1}`,
         ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
       });
     });
@@ -60,10 +60,11 @@ let generateGroupsSchedulers = () => {
     icals[promo].tpfab.map((group, index) => {
       if (group.ical === "") return;
       classes[promo].tpfab.push({
-        className: `TP ${i} ${index} FAB`,
+        className: `S ${i+1} TP FAB ${index+1} S${i+1}`,
         ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
       });
     });
+    ++i;
   });
 };
 
@@ -91,8 +92,8 @@ let nextEventFilter = (event) => {
 
 let getAllPlannings = async () => {
   console.log("Refreshing plannings");
-  edt.sgm_but1 = [];
-  edt.sgm_but2 = [];
+  edt.sgm_but_1 = [];
+  edt.sgm_but_2 = [];
   edt.sgm_but3 = [];
   try {
     for (const c of Object.keys(classes)) {
@@ -102,74 +103,79 @@ let getAllPlannings = async () => {
       let eventsTP = [];
       let eventsTPFab = [];
 
-      classes[c].td.forEach((g) => {
-        g.ical.getEvents().then(events => events.find(nextEventFilter)).then(e => eventsTD.push(e));
-      });
+      for(let g of classes[c].td) {
+        eventsTD.push(await g.ical.getEvents().then(events => events.find(nextEventFilter)));
+      }
 
-      classes[c].tp.forEach((g) => {
-        g.ical.getEvents().then(events => events.find(nextEventFilter)).then(e => eventsTP.push(e));
-      });
+      for(let g of classes[c].tp) {
+        eventsTP.push(await g.ical.getEvents().then(events => events.find(nextEventFilter)));
+      }
 
-      classes[c].tpfab.forEach((g) => {
-        g.ical.getEvents().then(events => events.find(nextEventFilter)).then(e => eventsTPFab.push(e));
-      });
+      for(let g of classes[c].tpfab) {
+        eventsTPFab.push(await g.ical.getEvents().then(events => events.find(nextEventFilter)));
+      }
 
       console.log(eventsTD);
-      console.log(eventsTD.length);
       console.log(eventsTP);
       console.log(eventsTPFab);
 
       if (eventPromo !== undefined) {
         edt[c].push({
-          className: c.toString().toUpperCase().replaceAll("_", " ").slice(-4),
+          className: c.toString().toUpperCase().replaceAll("_", " ").slice(-5),
           isFullClass: true,
           type: "PROMOTION",
           subject: eventPromo.subject,
           teacher: eventPromo.teachers.join(" - "),
           room: eventPromo.locations[0].split(" ")[1],
         });
+        //continue;
       }
 
-      eventsTD.forEach((e) => {
-        if (e === undefined) return;
-        edt[c].push({
-          className: e.className,
-          isFullClass: true,
-          type: "TD",
-          subject: e.subject,
-          teacher: e.teachers.join(" - "),
-          room: e.locations[0].split(" ")[1],
+      if (eventsTD.filter(v => v !== undefined ).length > 0) {
+        eventsTD.forEach((e) => {
+          if(e === undefined) return;
+          edt[c].push({
+            className: classes[c].td[eventsTD.indexOf(e)].className,
+            isFullClass: true,
+            type: "TD",
+            subject: e.subject,
+            teacher: e.teachers.join(" - "),
+            room: e.locations[0].split(" ")[1],
+          });
         });
-      });
-      let coupledTPFabs = [];
-      let couple = [null, null];
-
-      for (let i = 0; i < eventsTPFab.length; i += 2) {
-        couple[0] = eventsTPFab[i];
-        couple[1] = eventsTPFab[i + 1];
-        coupledTPFabs.push(couple);
       }
 
-      coupledTPFabs.forEach((e) => {
-        if (e === undefined || e[0] === undefined || e[1] === undefined) return;
-        edt[c].push({
-          className: e[0].className,
-          isFullClass: false,
-          type: "TP",
-          subject: [e[0].subject, e[1].subject],
-          teacher: [e[0].teachers.join(" - "), e[1].teachers.join(" - ")],
-          room: [e[0].locations[0].split(" ")[1], e[1].locations[0].split(" ")[1]],
+      if (eventsTD.filter((v) => v).length > 0) {
+        let coupledTPFabs = [];
+        let couple = [null, null];
+
+        for (let i = 0; i < eventsTPFab.length; i += 2) {
+          couple[0] = eventsTPFab[i];
+          couple[1] = eventsTPFab[i + 1];
+          coupledTPFabs.push(couple);
+        }
+
+        coupledTPFabs.forEach((e) => {
+          if (e === undefined || (e[0] === undefined && e[1] === undefined)) return;
+          edt[c].push({
+            className: classes[c].tpfab[eventsTPFab.indexOf(e)].className,
+            isFullClass: false,
+            type: "TP",
+            subject: [e[0] ? e[0].subject : undefined, e[1] ? e[1].subject : undefined],
+            teacher: [e[0] ? e[0].teachers ? e[0].teachers.join(" - ") : "Pas de prof" : "", e[1] ? e[1].teachers ? e[1].teachers.join(" - ") : "Pas de prof" : ""],
+            room: [e[0] ? e[0].locations[0] ? e[0].locations[0].split(" ")[1] : "-" : "", e[1] ? e[1].locations[0] ? e[1].locations[0].split(" ")[1] : "-" : ""],
+          });
         });
-      });
+      }
 
       eventsTP.forEach((e) => {
         edt[c].push({
-          className: e.className,
+          className: classes[c].tp[eventsTP.indexOf(e)].className,
           isFullClass: true,
           type: "TP",
-          subject: e.subject,
-          teacher: e.teachers.join(" - "),
-          room: e.locations[0].split(" ")[1],
+          subject: e ? e.subject : "",
+          teacher: e ? e.teachers ? e.teachers.join(" - ") : "Pas de prof" : "",
+          room: e ? e.locations[0] ? e.locations[0].split(" ")[1] : "-" : "",
         });
       });
     }
@@ -177,8 +183,8 @@ let getAllPlannings = async () => {
   } catch
   (e) {
     console.error("Failed to fetch plannings", e);
-    edt.sgm_but1 = [];
-    edt.sgm_but2 = [];
+    edt.sgm_but_1 = [];
+    edt.sgm_but_2 = [];
     edt.sgm_but3 = [];
     pageTitle = "Si si tu as cours, c'est juste un bug :)";
   }
@@ -187,8 +193,8 @@ let getAllPlannings = async () => {
 
 let refresh = async () => {
   pageTitle = "Prochains cours (affiché 15mn avant)";
-  edt.sgm_but1 = [];
-  edt.sgm_but2 = [];
+  edt.sgm_but_1 = [];
+  edt.sgm_but_2 = [];
   edt.sgm_but3 = [];
   await getAllPlannings();
 };
@@ -213,14 +219,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c1">
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.sgm_but1.slice(0, 2)"
+              v-for="(data, index) in edt.sgm_but_1.slice(0, 2)"
               :key="index"
               :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.sgm_but1.slice(2, 4)"
+              v-for="(data, index) in edt.sgm_but_1.slice(2, 4)"
               :key="index"
               :data="data"
           />
@@ -230,14 +236,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c2">
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.sgm_but2.slice(0, 2)"
+              v-for="(data, index) in edt.sgm_but_2.slice(0, 2)"
               :key="index"
               :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.sgm_but2.slice(2, 4)"
+              v-for="(data, index) in edt.sgm_but_2.slice(2, 4)"
               :key="index"
               :data="data"
           />

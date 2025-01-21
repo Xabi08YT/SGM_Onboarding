@@ -86,12 +86,12 @@ export default {
   computed: {
     classColor() {
       const className = this.data.className.toUpperCase();
-      if (className.slice(-1) == "1") return "#FF000077";
-      if (className.slice(-1) == "2") return "#00CCFF99";
-      if (className.slice(-1) == "3") return "#00FF88BB";
-      if (className.slice(-1) == "4") return "#FF00FF77";
-      if (className.slice(-1) == "5") return "#0000FF88";
-      if (className.slice(-1) == "6") return "#FF880088";
+      if (className.split(" ")[1] == "1") return "#FF000077";
+      if (className.split(" ")[1] == "2") return "#00CCFF99";
+      if (className.split(" ")[1] == "3") return "#00FF88BB";
+      if (className.split(" ")[1] == "4") return "#FF00FF77";
+      if (className.split(" ")[1] == "5") return "#0000FF88";
+      if (className.split(" ")[1] == "6") return "#FF880088";
       return "#000000";
     },
     isSplited() {

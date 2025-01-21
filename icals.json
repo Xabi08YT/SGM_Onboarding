@@ -1,5 +1,5 @@
 {
-  "sgm_but1": {
+  "sgm_but_1": {
     "ical": "8E6DB0E24328CFF2577E1F657515F3B6EF2D5622E505C2D9F9DB65DC914753F5FDEEC4A83FE5484DB5C4344ABF1C123B",
     "td": [
       {
@@ -50,7 +50,7 @@
       }
     ]
   },
-  "sgm_but2": {
+  "sgm_but_2": {
     "ical": "36916400D29F36ABF34F505ED73FCF89F15FAB343DD53A17EE2367D86999CFF13C1A903ECB2C6A7C0481CEFCEE55B612",
     "td": [
       {
@@ -72,51 +72,6 @@
       },
       {
         "ical": "CE569D419DCA23992C0A9204B9ADC3FB37571B4B4A8B5FA416864C711C04662B4749C107B513FEA28732B25AB6279908"
-      }
-    ],
-    "tpfab": [
-      {
-        "ical": ""
-      },
-      {
-        "ical": ""
-      },
-      {
-        "ical": ""
-      },
-      {
-        "ical": ""
-      },
-      {
-        "ical": ""
-      },
-      {
-        "ical": ""
-      },
-      {
-        "ical": ""
-      },
-      {
-        "ical": ""
-      }
-    ]
-  },
-  "sgm_but3": {
-    "ical": "7EEDDCE9BC40E47469D193F8E9841755D46709F88C7DC67D4B3A59F0C87044294178BE8BCD694468639E44CB5545BB38",
-    "td": [
-      {
-        "ical": "11903D608DBECC145E02241BCFF6408FD2F0AA6CC0FC697B49C176384223FA892D52B61D54CEC8E55333672197007E80"
-      }
-    ],
-    "tp": [
-      {
-        "ical": "BEAB0980DE4B37773EAA2D9572ADAB0D49A44B92D3CF0A33BCCB8A37BE07531EC54238C687137676AE8E0DAE4E59DBEF"
-      },
-      {
-        "ical": "DEC934A38B80C2093670019EA67DD72A5898BE438AF1F99514AC7A4E6C051FDDF1F0AB65F3617C7F409445C9F1CA7357"
-      },
-      {
-        "ical": "8EF0C28AC020261B94F8880F3B58D86B244F0071673D4E4192C2A12E9A31FAEB29FF2E155DFC23A0273FF86C41CBEC85"
       }
     ],
     "tpfab": [
