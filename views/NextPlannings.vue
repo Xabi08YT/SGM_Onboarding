@@ -44,7 +44,7 @@ let generateGroupsSchedulers = () => {
     icals[promo].td.map((group, index) => {
       if (group.ical === "") return;
       classes[promo].td.push({
-        className: `TD - ${index + 1} S${i + 1}`,
+        className: `S ${i + 1} TD ${index + 1}`,
         ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
       });
     });
