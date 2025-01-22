@@ -7,12 +7,10 @@
         v-if="Object.keys(views).includes('menus')"
         :isActive="currentView == 'menus'"
     />
-    <ClientOnly>
-      <Planning
-          v-if="Object.keys(views).includes('planning')"
-          :isActive="currentView == 'planning'"
-      />
-    </ClientOnly>
+    <Planning
+        v-if="Object.keys(views).includes('planning')"
+        :isActive="currentView == 'planning'"
+    />
     <Transport
         v-if="Object.keys(views).includes('transport')"
         :isActive="currentView == 'transport'"
@@ -129,7 +127,7 @@ export default {
     getNextViewName() {
       const viewTypes = Object.keys(this.views);
 
-      if(this.isEndOfDay()) {
+      if (this.isEndOfDay()) {
         console.log("Hey");
         let nextView = viewTypes[viewTypes.indexOf(this.currentView) + 1];
         if (nextView === undefined) nextView = viewTypes[0];
@@ -140,7 +138,7 @@ export default {
       this.i %= 2;
       let nextView = undefined;
 
-      if(this.i === 1) {
+      if (this.i === 1) {
         this.nextIndex = viewTypes.indexOf(this.currentView) + 1;
         nextView = viewTypes[0];
       } else {
@@ -163,7 +161,7 @@ export default {
     changeView() {
       this.currentView = this.getNextViewName();
       if (
-        this.views[this.currentView].allowed() === false &&
+          this.views[this.currentView].allowed() === false &&
           !DEVELOPEMENT_MODE
       ) {
         this.changeView();
@@ -171,7 +169,7 @@ export default {
       }
 
       if (Object.keys(this.views).length <= 1)
-      //Detect we've commented all views except one
+          //Detect we've commented all views except one
         return; // (Disable slide show)
 
       setTimeout(() => {
