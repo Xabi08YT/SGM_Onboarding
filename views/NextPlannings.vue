@@ -9,7 +9,7 @@ const delay = 1000 * 60 * 5; // Refresh toutes les 5 minutes
 
 let refreshInterval = undefined;
 let promos;
-let proxyUrl = "/api/hp/";
+let proxyUrl = `${useRequestURL()}api/hp/`;
 let classes = {};
 let version = "2024.0.9.0";
 let pageTitle = "pageTitle";
@@ -40,31 +40,34 @@ let generateGroupsSchedulers = () => {
       tp: [],
       tpfab: []
     };
-
-    icals[promo].td.map((group, index) => {
-      if (group.ical === "") return;
-      classes[promo].td.push({
-        className: `TD - ${index + 1} S${i + 1}`,
-        ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
+    try {
+      icals[promo].td.map((group, index) => {
+        if (group.ical === "") return;
+        classes[promo].td.push({
+          className: `S ${i + 1} TD ${index + 1}`,
+          ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
+        });
       });
-    });
 
-    icals[promo].tp.map((group, index) => {
-      if (group.ical === "") return;
-      classes[promo].tp.push({
-        className: `S ${i + 1} TP SC ${index + 1}`,
-        ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
+      icals[promo].tp.map((group, index) => {
+        if (group.ical === "") return;
+        classes[promo].tp.push({
+          className: `S ${i + 1} TP SC ${index + 1}`,
+          ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
+        });
       });
-    });
 
-    icals[promo].tpfab.map((group, index) => {
-      if (group.ical === "") return;
-      classes[promo].tpfab.push({
-        className: `S ${i+1} TP FAB ${index+1} S${i+1}`,
-        ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
+      icals[promo].tpfab.map((group, index) => {
+        if (group.ical === "") return;
+        classes[promo].tpfab.push({
+          className: `S ${i+1} TP FAB ${index+1} S${i+1}`,
+          ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
+        });
       });
-    });
-    i += 2;
+      i += 2;
+    } catch (e) {
+      console.error(e);
+    }
   });
 };
 
