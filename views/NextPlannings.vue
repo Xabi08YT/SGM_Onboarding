@@ -4,7 +4,7 @@ import PlanningCard from "../components/PlanningCard.vue";
 import icals from "../icals.json";
 import {HyperplanningScheduler} from "@xabi08yt/iutgradignanhpscheduler";
 
-const edt = reactive({sgm_but_1: [], sgm_but_2: [], sgm_but3: []});
+const edt = reactive({sgm_but_1: [], sgm_but_2: [], sgm_but_3: []});
 const delay = 1000 * 60 * 5; // Refresh toutes les 5 minutes
 
 let refreshInterval = undefined;
@@ -28,10 +28,10 @@ let generateGroupsSchedulers = () => {
   let i = 0;
   Object.keys(icals).forEach((promo) => {
     if (
-      promo === "sgm_but3_ALT" ||
-        (promo === "sgm_but3_FI" && !But3_done)
+      promo === "sgm_but_3_ALT" ||
+        (promo === "sgm_but_3_FI" && !But3_done)
     ) {
-      promos.push("sgm_but3");
+      promos.push("sgm_but_3");
     }
 
     classes[promo] = {
@@ -44,7 +44,7 @@ let generateGroupsSchedulers = () => {
     icals[promo].td.map((group, index) => {
       if (group.ical === "") return;
       classes[promo].td.push({
-        className: `TD - ${index+1} S${i+1}`,
+        className: `TD - ${index + 1} S${i + 1}`,
         ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
       });
     });
@@ -52,7 +52,7 @@ let generateGroupsSchedulers = () => {
     icals[promo].tp.map((group, index) => {
       if (group.ical === "") return;
       classes[promo].tp.push({
-        className: `S ${i+1} TP SC ${index+1}`,
+        className: `S ${i + 1} TP SC ${index + 1}`,
         ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
       });
     });
@@ -64,7 +64,7 @@ let generateGroupsSchedulers = () => {
         ical: new HyperplanningScheduler(group.ical, {proxyUrl, version})
       });
     });
-    ++i;
+    i += 2;
   });
 };
 
@@ -94,7 +94,7 @@ let getAllPlannings = async () => {
   console.log("Refreshing plannings");
   edt.sgm_but_1 = [];
   edt.sgm_but_2 = [];
-  edt.sgm_but3 = [];
+  edt.sgm_but_3 = [];
   try {
     for (const c of Object.keys(classes)) {
       // Mappage des events
@@ -124,7 +124,7 @@ let getAllPlannings = async () => {
         edt[c].push({
           className: c.toString().toUpperCase().replaceAll("_", " ").slice(-5),
           isFullClass: true,
-          type: "PROMOTION",
+          type: "PROMO",
           subject: eventPromo.subject,
           teacher: eventPromo.teachers.join(" - "),
           room: eventPromo.locations[0].split(" ")[1],
@@ -187,7 +187,7 @@ let getAllPlannings = async () => {
     console.error("Failed to fetch plannings", e);
     edt.sgm_but_1 = [];
     edt.sgm_but_2 = [];
-    edt.sgm_but3 = [];
+    edt.sgm_but_3 = [];
     pageTitle = "Si si tu as cours, c'est juste un bug :)";
   }
 }
@@ -197,7 +197,7 @@ let refresh = async () => {
   pageTitle = "Prochains cours (affiché 15mn avant)";
   edt.sgm_but_1 = [];
   edt.sgm_but_2 = [];
-  edt.sgm_but3 = [];
+  edt.sgm_but_3 = [];
   await getAllPlannings();
 };
 
@@ -255,14 +255,14 @@ onUnmounted(() => clearInterval(refreshInterval));
       <div id="c3">
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.sgm_but3.slice(0, 2)"
+              v-for="(data, index) in edt.sgm_but_3.slice(0, 2)"
               :key="index"
               :data="data"
           />
         </div>
         <div class="view-content">
           <PlanningCard
-              v-for="(data, index) in edt.sgm_but3.slice(2, 4)"
+              v-for="(data, index) in edt.sgm_but_3.slice(2, 4)"
               :key="index"
               :data="data"
           />

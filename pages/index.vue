@@ -178,16 +178,6 @@ export default {
         setTimeout(this.changeView, 200);
       }, this.views[this.currentView].time());
     },
-
-    /**
-     * Return the time in ms before the next view is displayed (after the planning)
-     * @return {number}
-     */
-    returnTimeForPlanning() {
-      if (this.onlyPlanning())
-        return 1000 * 60 * 10; // Forcing for 10 minutes
-      return 1000 * 10;
-    },
   },
   mounted() {
     this.$refs.background && this.$refs.background.next();
