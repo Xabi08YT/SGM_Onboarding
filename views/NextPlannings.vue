@@ -118,10 +118,9 @@ let getAllPlannings = async () => {
         eventsTPFab.push(await g.ical.getEvents().then(events => events.find(nextEventFilter)));
       }
 
-      console.log(eventsTD);
-      console.log(eventsTP);
-      console.log(eventsTPFab);
-      console.log(classes);
+      eventsTD = eventsTD.filter(e => e);
+      eventsTP = eventsTP.filter(e => e);
+      eventsTPFab = eventsTPFab.filter(e => e);
 
       if (eventPromo !== undefined) {
         edt[c].push({
