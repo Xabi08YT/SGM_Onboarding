@@ -36,7 +36,6 @@ jobs:
             podman build -t onboarding-sgm-preview:latest .
             if [[ $? -ne 0 ]] ; then
               echo "Failed, Cleaning up..."
-              podman image ls -a | grep '<none>' | awk '{print $3}' | xargs podman rmi -f
               exit 1
             fi
             echo "Using preview podman configs..."
@@ -45,5 +44,3 @@ jobs:
             podman-compose down
             echo "Bringing up new preview..."
             podman-compose up -d
-            echo "Cleaning up..."
-            podman image ls -a | grep '<none>' | awk '{print $3}' | xargs podman rmi -f
