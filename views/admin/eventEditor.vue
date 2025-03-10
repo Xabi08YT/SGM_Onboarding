@@ -130,7 +130,7 @@ const editEvent = async (modified) => {
  * @returns {Promise<void>}
  */
 const addEvent = async (newEvent) => {
-  let res = await fetch("/info/api/v1/event", {
+  let res = await fetch("/sgm/api/v1/event", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(newEvent)
@@ -156,7 +156,7 @@ const addEvent = async (newEvent) => {
  * @returns {Promise<void>}
  */
 const init = async () => {
-  let loggedIn = await fetch("/info/api/v1/session");
+  let loggedIn = await fetch("/sgm/api/v1/session");
 
   if (!loggedIn.ok) {
     return navigateTo("/login");

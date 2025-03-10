@@ -7,11 +7,8 @@ const cfg = dotenv.config();
 const client = new prisma.PrismaClient();
 const defaultSlides = [
   {name: "plannings", active: true, time: 10},
-  {name: "meme", active: false, time: 7},
   {name: "transport", active: true, time: 7},
   {name: "menu", active: true, time: 10},
-  {name: "discord", active: false, time: 7},
-  {name: "maintainer", active: true, time: 10},
   {name: "announcements", active: true, time: 7},
   {name: "weather", active: true, time: 7},
 ];
