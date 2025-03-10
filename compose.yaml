@@ -11,4 +11,4 @@ services:
       proxy:
         ipv4_address: 10.89.1.250
     volumes:
-      "~/sgmProd.env:.env"
+      - "~/sgmProd.env:/server/.env"
