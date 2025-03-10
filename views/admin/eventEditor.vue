@@ -50,7 +50,7 @@ const formatDate = (date) => {
  * @returns {Promise<void>}
  */
 const initEvents = async () => {
-  let res = await fetch("/info/api/v1/event");
+  let res = await fetch("/sgm/api/v1/event");
   let data = await res.json();
   events.value = deepObjectClone(data);
 };
@@ -61,7 +61,7 @@ const initEvents = async () => {
  * @returns {Promise<void>}
  */
 const deleteEvent = async (id) => {
-  let res = await fetch("/info/api/v1/event", {
+  let res = await fetch("/sgm/api/v1/event", {
     method: "DELETE",
     body: JSON.stringify(id)
   });
@@ -103,7 +103,7 @@ const initCreateForm = () => {
  * @returns {Promise<void>}
  */
 const editEvent = async (modified) => {
-  let res = await fetch("/info/api/v1/event", {
+  let res = await fetch("/sgm/api/v1/event", {
     method: "PUT",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(modified)

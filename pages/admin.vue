@@ -9,7 +9,7 @@ import UserEditor from "../views/admin/userEditor.vue";
  * @returns {Promise<void>}
  */
 const init = async () => {
-  let loggedIn = await fetch("/info/api/v1/session");
+  let loggedIn = await fetch("/sgm/api/v1/session");
 
   if (!loggedIn.ok) {
     return navigateTo("/login");

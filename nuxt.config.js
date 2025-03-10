@@ -9,6 +9,8 @@ export default {
     "nuxt-lucide-icons",
   ],
 
+  css: ["./stylesheets/global.css"],
+
   googleFonts: {
     display: 'swap',
     outputDir: 'assets/fonts/',

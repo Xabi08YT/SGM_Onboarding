@@ -3,7 +3,7 @@ import { SwaggerUIBundle } from "swagger-ui-dist";
 import {onMounted} from "vue";
 
 onMounted(async () => {
-  let specs = await fetch(`/info/api/v1/doc`);
+  let specs = await fetch(`/sgm/api/v1/doc`);
   specs = await specs.json();
   console.log(specs);
   SwaggerUIBundle({
