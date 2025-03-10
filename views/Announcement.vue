@@ -1,23 +1,41 @@
 <template>
-    <div class="view-container" v-show="isActive">
-        <h1 class="view-title">Annonce de l'Assopeña</h1>
-        <div class="announcment">
-          <h2>Pour bien commencer la dernière semaine, le lundi 21/10/2024, le BDE vends des crêpes 0.5€ l'unité ! <br/> Une offre spéciale thé + 1 crêpe est disponible à 0.80€ !</h2>
-          <img src="@/public/assets/asso/assoCrepes.png" id="AssoImg" />
-        </div>
+  <div class="view-container" v-show="isActive" v-if="eventData !== undefined">
+    <h1 class="view-title">{{eventData.title}}</h1>
+    <div class="announcment">
+      <h2>{{eventData.description}}</h2>
+      <div id="AssoImg" >
+        <img :src=path() />
+      </div>
     </div>
+  </div>
 </template>
 <script>
 export default{
   props: {
     isActive: Boolean,
+    eventData: Object,
+  },
+  data() {
+    return {
+      path:() => this.eventData.image !== null && this.eventData.image !== "" ? this.eventData.image : "assets/Warning.png",
+    };
   }
 };
 </script>
 <style>
+
 #AssoImg {
-    max-height: 425px;
-    max-width: 325px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#AssoImg > img {
+  max-height: 425px;
+  max-width: 425px;
+  margin: 10px;
+  width: 425px;
+  height: 425px;
 }
 
 .announcment {

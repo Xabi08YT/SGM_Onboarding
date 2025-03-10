@@ -22,10 +22,7 @@
     <Announcement
         v-if="Object.keys(views).includes('announcement')"
         :isActive="currentView == 'announcement'"
-    />
-    <TeacherAnnouncement
-        v-if="Object.keys(views).includes('tannouncement')"
-        :isActive="currentView == 'tannouncement'"
+        :eventData="events[eventIndex-1]"
     />
     <LoadingBar :view="views[currentView]"/>
     <TransitionOverlay ref="loading"/>
@@ -45,7 +42,6 @@ import Planning from "../views/NextPlannings.vue";
 
 import "../stylesheets/reset.css";
 import Announcement from "../views/Announcement.vue";
-import TeacherAnnouncement from "../views/TeacherAnnouncement.vue";
 
 const DEVELOPEMENT_MODE = false;
 
@@ -55,6 +51,30 @@ export default {
       i: 0,
       nextIndex: 0,
       currentView: "planning",
+      events: reactive([]),
+      eventIndex: 0,
+      slidesParameters: reactive({
+        transport: {
+          time: 10,
+          active: true,
+        },
+        plannings: {
+          time: 10,
+          active: true,
+        },
+        weather: {
+          time: 10,
+          active: true,
+        },
+        announcements: {
+          time: 10,
+          active: true,
+        },
+        menu: {
+          time: 10,
+          active: true,
+        }
+      }),
       views: {
         /*
           To active only one or some views, juste comment here what you dont want to be
@@ -64,37 +84,33 @@ export default {
           The order in the object is the display order
         */
         planning: {
-          time: () => DEVELOPEMENT_MODE ? 5000 : 2 * 5000,
+          time: () => DEVELOPEMENT_MODE ? 5000 : this.slidesParameters.plannings.time * 1000,
           allowed: () => {
             // 6h to 17h30
             const currentTime =
                 new Date().getHours() * 60 + new Date().getMinutes();
-            return currentTime >= 6 * 60 && currentTime <= 17 * 60 + 30;
+            return this.slidesParameters.plannings.active && currentTime >= 6 * 60 && currentTime <= 17 * 60 + 30;
           }
         },
         transport: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : this.getTimeForBusesAndWeather(),
-          allowed: () => true,
+          time: () => DEVELOPEMENT_MODE ? 10000 : this.isEndOfDay() ? 30 * 1000 : this.slidesParameters.transport.time * 1000,
+          allowed: () => this.slidesParameters.transport.active,
         },
         weather: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 7 * 1000,
-          allowed: () => true,
+          time: () => DEVELOPEMENT_MODE ? 10000 : this.isEndOfDay() ? 30 * 1000 : this.slidesParameters.weather.time * 1000,
+          allowed: () => this.slidesParameters.weather.active,
         },
         menus: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 15,
+          time: () => DEVELOPEMENT_MODE ? 10000 : this.slidesParameters.menu.time * 1000,
           allowed: () => {
             // 6h to 14h
             let currentHour = new Date().getHours();
-            return currentHour >= 6 && currentHour < 14;
+            return this.slidesParameters.menu.active && currentHour >= 6 && currentHour < 14;
           },
         },
         announcement: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => false && !this.isEndOfDay(),
-        },
-        tannouncement: {
-          time: () => DEVELOPEMENT_MODE ? 10000 : 1000 * 7,
-          allowed: () => false && !this.isEndOfDay(),
+          time: () => DEVELOPEMENT_MODE ? 10000 : this.slidesParameters.announcements.time * 1000,
+          allowed: () => this.slidesParameters.announcements.active && !this.isEndOfDay(),
         },
       },
     };
@@ -111,24 +127,12 @@ export default {
     },
 
     /**
-     * @return the time to show the weather and transport card depending on current Hour
-     */
-    getTimeForBusesAndWeather() {
-      const currentTime = new Date().getHours() * 60 + new Date().getMinutes();
-      if (currentTime > 17 * 60 + 30) {
-        return 60000;
-      }
-      return 7000;
-    },
-
-    /**
      * @return the name of the next view that will be displayed
      */
     getNextViewName() {
-      const viewTypes = Object.keys(this.views);
+      const viewTypes = Object.keys(this.views).filter((e) => this.views[e].allowed());
 
       if (this.isEndOfDay()) {
-        console.log("Hey");
         let nextView = viewTypes[viewTypes.indexOf(this.currentView) + 1];
         if (nextView === undefined) nextView = viewTypes[0];
         return nextView;
@@ -139,16 +143,17 @@ export default {
       let nextView = undefined;
 
       if (this.i === 1) {
-        this.nextIndex = viewTypes.indexOf(this.currentView) + 1;
+        if (this.currentView === "announcement" && this.events.length > this.eventIndex && this.event.length > 0) {
+          this.nextIndex = viewTypes.indexOf(this.currentView);
+        } else {
+          this.nextIndex = viewTypes.indexOf(this.currentView) + 1;
+        }
         nextView = viewTypes[0];
       } else {
         nextView = viewTypes[this.nextIndex];
       }
-      if (this.views[nextView].allowed() === false) {
-        this.i = 1;
-        this.nextIndex = viewTypes.indexOf(this.currentView) + 1;
-        nextView = this.getNextViewName();
-      }
+      console.log("nextView", nextView);
+
       if (nextView === undefined) nextView = viewTypes[0];
       return nextView;
     },
@@ -160,12 +165,24 @@ export default {
      */
     changeView() {
       this.currentView = this.getNextViewName();
+
+      if (this.events.length === 0 && this.currentView === "announcement") {
+        const viewTypes = Object.keys(this.views).filter((e) => this.views[e].allowed());
+        this.currentView = viewTypes[(viewTypes.indexOf(this.currentView) + 1)%viewTypes.length];
+      }
+
       if (
           this.views[this.currentView].allowed() === false &&
           !DEVELOPEMENT_MODE
       ) {
         this.changeView();
         return;
+      }
+
+      if (this.currentView === "announcement") {
+        ++this.eventIndex;
+      } else {
+        this.eventIndex = 0;
       }
 
       if (Object.keys(this.views).length <= 1)
@@ -178,10 +195,34 @@ export default {
         setTimeout(this.changeView, 200);
       }, this.views[this.currentView].time());
     },
+    /**
+     * Refresh enabled slides and display time of these slides.
+     * @returns {Promise<void>}
+     */
+    async refreshEnabledSlides() {
+      let res = await fetch(`${useRequestURL()}api/v1/slide`).then(res => res.json());
+      let slides = {};
+      for (let slide of res) {
+        slides[slide.name] = {active: slide.active, time: slide.time};
+      }
+      this.slidesParameters = slides;
+    },
+    /**
+     * Refresh ongoing registered events in the database
+     * @returns {Promise<void>}
+     */
+    async refreshOngoingEvents() {
+      let res = await fetch(`${useRequestURL()}api/v1/getOngoingEvents`).then(res => res.json());
+      this.events = JSON.parse(res.body);
+    }
   },
-  mounted() {
+  async mounted() {
+    await this.refreshEnabledSlides();
+    await this.refreshOngoingEvents();
     this.$refs.background && this.$refs.background.next();
     this.changeView();
+    setInterval(this.refreshEnabledSlides, 10 * 1000);
+    setInterval(this.refreshOngoingEvents, 30 * 1000);
   },
   components: {
     Planning,
@@ -193,7 +234,6 @@ export default {
     DateAndHourHeader,
     LoadingBar,
     Announcement,
-    TeacherAnnouncement,
   },
 };
 </script>

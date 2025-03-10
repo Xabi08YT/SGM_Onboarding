@@ -10,3 +10,4 @@ node_modules
 compose.yaml
 DOCKERFILE
 LICENSE
+.setupfinished
