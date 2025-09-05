@@ -28,7 +28,10 @@ async function fetchMenu(URL) {
     let $ = cheerio.load(html);
     let tabPlats = [];
 
-    const htmlSelfMenu = $("ul.meal_foodies > li:nth-child(2)");
+    let htmlSelfMenu = $("ul.meal_foodies > li:nth-child(3)");
+    if(URL === SPACE_URL) {
+        htmlSelfMenu = $("ul.meal_foodies > li:nth-child(2)");
+    }
     $ = cheerio.load(htmlSelfMenu.html());
 
     $("li").each((_, htmlPlat) => {
