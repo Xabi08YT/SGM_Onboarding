@@ -23,6 +23,7 @@ const send = async () => {
   let res = await fetch(`${rootUrl}/api/v1/hyperplanningEndpoint`, {method:"PUT",body: JSON.stringify(object)})
   if (res.status === 200) {
     toast({title:"Paramètres mis à jour avec succès"});
+    await get();
   } else {
     toast({title: "Une erreur est survenue", description: await res.json(), variant: "destructive"});
   }
@@ -37,7 +38,8 @@ const get = async () => {
   let body = await  res.json()
   console.log(body)
   hpVersion.value =  body.version.value.replaceAll("\"","");
-  hpIcals.value = body.icals.value.slice(1,-1).replaceAll("\\","");
+  hpIcals.value = body.icals.value.slice(1,-1).replaceAll("\\n","");
+  hpIcals.value = hpIcals.value.replaceAll("\\","");
 }
 
 const init = async () => {
@@ -60,18 +62,6 @@ const init = async () => {
 
   await get();
 
-};
-
-const goToAdmin = () => {
-  return navigateTo("/admin");
-};
-
-const goToCulture = () => {
-  return navigateTo("/culturepanel");
-};
-
-const goToJPO = () => {
-  return navigateTo("/jpo");
 };
 
 init();
