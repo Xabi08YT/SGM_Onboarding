@@ -17,7 +17,7 @@ export default {
     css: ["@@/stylesheets/global.css"],
 
     app: {
-        baseURL: "/preview/info/"
+        baseURL: "/preview/sgm/"
     },
 
     googleFonts: {
