@@ -27,6 +27,7 @@ init();
 </script>
 
 <template>
+  <AdminTopBar />
   <div id="container"
        class="w-screen min-h-screen lg:h-screen lg:max-h-screen flex flex-col lg:flex-row p-[25px] justify-center items-center">
     <Toaster/>
