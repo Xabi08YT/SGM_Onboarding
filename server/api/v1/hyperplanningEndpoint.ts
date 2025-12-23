@@ -1,6 +1,6 @@
 import {getConfigValue, PrismaKeyValue, updateConfigValue} from "~~/server/database";
 import {parseCookies} from "h3";
-import {getRole, verifyToken} from "~~/server/jwt";
+import {getRole, verifyToken} from "~/server/jwt";
 
 /**
  * @openapi

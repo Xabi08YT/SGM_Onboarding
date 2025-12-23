@@ -1,5 +1,5 @@
 import {AuthenticatedUser, login, LoginResult} from "~~/server/database";
-import {createToken, exchangeToken, getRole, verifyToken} from "~~/server/jwt";
+import {createToken, exchangeToken, getRole, verifyToken} from "~/server/jwt";
 
 const adminPanelRoles = ["BDE", "ENSEIGNANT", "ADMIN"]
 
