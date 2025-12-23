@@ -2,9 +2,9 @@
   <div class="planning-container">
     <!-- eslint-disable vue/no-v-for-template-key -->
     <div
-      class="planning-card"
-      v-for="(group, groupindex) in getGroupsComponent()"
-      :key="groupindex"
+        class="planning-card"
+        v-for="(group, groupindex) in getGroupsComponent()"
+        :key="groupindex"
     >
       <div :style="`background-color: ${classColor}; color: white; border-radius: 21px 21px 0px 0px`" class="card-header">
         <p v-for="(item, index) in getClassNameComponent(group)" :key="index">
@@ -14,27 +14,27 @@
       <div v-if="group !== undefined" class="data-container">
         <div class="subject-infos">
           <p :style="`font-size: ${isSplited ? '27px' : '20px'}`">
-            {{ data.type ? data.type : "" }} - {{ data.subject }}
+            {{ classType(group === "seconde" ? 1 : 0) }} - {{ data.subject[group === "seconde" ? 1 : 0] }}
           </p>
         </div>
-      <div class="subject-infos" v-if="isSplited">
+        <div class="subject-infos" v-if="isSplited">
           <p class="teacher" :style="`font-size: ${isSplited ? '20px' : '18px'}`">
             {{
-              data.teacher
-                ? data.teacher
-                : "Pas de prof"
+              data.teacher[group === "seconde" ? 1 : 0]
+                  ? data.teacher[group === "seconde" ? 1 : 0]
+                  : "Autonomie"
             }}
           </p>
         </div>
         <div class="subject-infos">
           <p class="room" :style="`font-size: ${isSplited ? '45px' : '30px'}`">
-            {{ data.room ? data.room : ""}}
+            {{ data.room[group === "seconde" ? 1 : 0] }}
           </p>
         </div>
       </div>
       <div v-else style="opacity: 0.5" class="data-container">
         <div class="subject-info">
-          <img style="width: 35%;" :src="noClassLogo" />
+          <NuxtImg style="width: 35%; margin-left: 33.5%" src="assets/robot.png" loading="lazy" />
           <p>Pas cours</p>
         </div>
       </div>
@@ -42,31 +42,30 @@
   </div>
 </template>
 
-<script>
-import robot from "@/public/assets/robot.png";
+<script lang="ts">
 export default {
   props: {
     data: {
       type: Object,
       required: true,
     },
-  },
-  data() {
-    return {
-      noClassLogo: robot,
-    };
+    dsMode: {
+      type: Boolean,
+      default: false,
+      required: false,
+    }
   },
   methods: {
     getGroupsComponent() {
       if (
-        // No class
-        this.data.subject[0] === undefined &&
-        this.data.subject[1] === undefined
+          // No class
+          this.data.subject[0] === undefined &&
+          this.data.subject[1] === undefined
       )
         return [undefined];
       if (this.data.isFullClass) return [""];
-      if (this.data.subject[0] === undefined) return ["SC 2"];
-      if (this.data.subject[1] === undefined) return ["SC 1"];
+      if (this.data.subject[0] === undefined) return ["seconde"];
+      if (this.data.subject[1] === undefined) return ["prime"];
       return ["prime", "seconde"]; // Prime et seconde ont cours en même temps
     },
     getClassNameComponent(group = undefined) {
@@ -86,12 +85,12 @@ export default {
   computed: {
     classColor() {
       const className = this.data.className.toUpperCase();
-      if (className.split(" ")[1] == "1") return "#FF000077";
-      if (className.split(" ")[1] == "2") return "#00CCFF99";
-      if (className.split(" ")[1] == "3") return "#00FF88BB";
-      if (className.split(" ")[1] == "4") return "#FF00FF77";
-      if (className.split(" ")[1] == "5") return "#0000FF88";
-      if (className.split(" ")[1] == "6") return "#FF880088";
+      if (className.includes("S1")) return "#FF000077";
+      if (className.includes("S2")) return "#00CCFF99";
+      if (className.includes("S3")) return "#00FF88BB";
+      if (className.includes("S4")) return "#FF00FF77";
+      if (className.includes("S5")) return "#0000FF88";
+      if (className.includes("S6")) return "#FF880088";
       return "#000000";
     },
     isSplited() {
@@ -160,7 +159,6 @@ export default {
 
   display: flex;
   flex-direction: column;
-  align-items: space-evenly;
   justify-content: space-evenly;
 }
 
@@ -173,22 +171,24 @@ export default {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  text-align: center;
 }
 
 .subject-infos > p {
   margin-right: 10px;
   margin-left: 10px;
   line-height: 40px;
+  max-width: 75%;
 }
 
-.subject-infos > p {
-  max-width: 75%;
+.subject-infos > img {
+  justify-self: center;
 }
 
 .room {
   color: rgb(41, 154, 189);
   /* font-size: 35px; */
-  font-weight: 900;
+  font-weight: 400;
 }
 
 .teacher {
