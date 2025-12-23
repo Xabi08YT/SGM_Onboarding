@@ -1,9 +1,7 @@
 <script setup>
 import {defineComponent, onMounted, onUnmounted, reactive} from "vue";
 import PlanningCard from "../app/components/PlanningCard.vue";
-import icals from "../icals.json";
 import {HyperplanningScheduler} from "@xabi08yt/iutgradignanhpscheduler";
-import hpSettings from "../hpSettings.json";
 
 const edt = reactive({sgm_but_1: [], sgm_but_2: [], sgm_but_3: []});
 const delay = 1000 * 60 * 5; // Refresh toutes les 5 minutes
@@ -12,8 +10,9 @@ let refreshInterval = undefined;
 let promos;
 let proxyUrl = `${useRequestURL()}api/hp/`;
 let classes = {};
-let {version} = hpSettings;
 let pageTitle = "pageTitle";
+let icals;
+let version;
 
 const props = defineProps({
   isActive: Boolean,
@@ -205,6 +204,13 @@ let refresh = async () => {
 };
 
 onMounted(async () => {
+  let res = await fetch("api/v1/hyperplanningEndpoint");
+  if (res.status === 200) {
+    let body = await res.json();
+    icals = JSON.parse(JSON.parse(body.icals.value));
+    version = body.version.value.replaceAll("\"", "");
+  }
+
   pageTitle = "Prochains cours (affiché 15mn avant)";
   generateGroupsSchedulers();
   await getAllPlannings();
