@@ -1,6 +1,5 @@
 const prisma = require("@prisma/client");
 const dotenv = require("dotenv");
-const bcrypt = require("bcrypt");
 const fs = require("fs");
 
 const cfg = dotenv.config();
@@ -43,7 +42,7 @@ client.user.create({
   data:
       {
         username: "admin",
-        password: bcrypt.hashSync(password, bcrypt.genSaltSync(parseInt(cfg.parsed.SALT_ROUNDS))),
+        password: await Bun.password.hash(password, {algorithm: "bcrypt", cost: 4}),
         role: ["ADMIN"],
       }
 }).then(() => {

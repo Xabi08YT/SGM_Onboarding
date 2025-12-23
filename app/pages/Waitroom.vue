@@ -5,12 +5,13 @@ import {toast, Toaster, useToast} from "../components/ui/toast";
 import { navigateTo } from "nuxt/app";
 import { ref } from "vue";
 
+const runtimeConfig = useRuntimeConfig();
+const requestURL = useRequestURL();
+const rootUrl = requestURL.origin + runtimeConfig.app.baseURL.slice(0,-1);
+const nuxtApp = useNuxtApp();
+
 let admin = ref(false);
-let bde = ref(false);
 let maintainer = ref(false);
-let enseignant = ref(false);
-let culture = ref(false);
-let dde = ref(false);
 
 const goToAdmin = () => {
   return navigateTo("/admin");
@@ -21,16 +22,13 @@ const goToHP = () => {
 };
 
 const init = async () => {
-    let loggedIn = await fetch("api/v1/session");
+    let loggedIn = await fetch(`${rootUrl}/api/v1/session`);
     if (!loggedIn.ok) {
         return navigateTo("/login");
     }
     let {roles} = await loggedIn.json();
     if (roles.includes("ADMIN")) {
         admin.value = true;
-    }
-    if (roles.includes("ENSEIGNANT")) {
-        enseignant.value = true;
     }
     if (roles.includes("MAINTAINER")) {
         maintainer.value = true;
@@ -51,10 +49,8 @@ init();
       </CardHeader>
       <CardFooter>
         <div class="flex flex-row w-full">
-          <Button v-if="admin || maintainer || enseignant || dde || bde" class="mt-[5px] w-full space" @click="goToAdmin">Admin</Button>
-          <Button v-if="admin || maintainer || culture" class="mt-[5px] w-full space" @click="goToCulture">Culture club</Button>
-          <Button v-if="admin || maintainer || dde" class="mt-[5px] w-full space" @click="goToHP">Hyperplanning setup</Button>
-          <Button v-if="admin || maintainer || enseignant || bde" class="mt-[5px] w-full space" @click="goToJPO">JPO setup</Button>
+          <Button v-if="admin || maintainer" class="mt-[5px] w-full space" @click="goToAdmin">Admin</Button>
+          <Button v-if="admin || maintainer" class="mt-[5px] w-full space" @click="goToHP">Hyperplanning setup</Button>
         </div>
       </CardFooter>
     </Card>

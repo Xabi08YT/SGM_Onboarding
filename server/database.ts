@@ -1,6 +1,5 @@
 import {PrismaClient} from "@prisma/client";
 import { JsonValue } from "@prisma/client/runtime/library";
-import * as bcrypt from "bcrypt";
 import * as dotenv from "dotenv";
 import NodeCache from "node-cache";
 

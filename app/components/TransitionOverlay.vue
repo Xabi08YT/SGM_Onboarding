@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import SGMWhite from "@/public/assets/SGM_White.png";
-import logoInfo from "@/public/assets/logo_iut.png";
+import SGMWhite from "~~/public/assets/SGM_White.png";
+import logoInfo from "~~/public/assets/logo_iut.png";
 export default {
   data() {
     return {

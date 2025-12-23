@@ -21,20 +21,8 @@ const login = async () => {
     })});
   if(res.ok) {
     toast({title: "Utilisateur connecté"});
-    let msg = await res.json();
-    console.log(msg);
-    if(msg.goto == "CHOOSE") {
-      nuxtApp.runWithContext(() => {
-        navigateTo('/waitroom');
-      });
-      return;
-    } else if(msg.goto == "CULTURE") {
-      nuxtApp.runWithContext(() => {
-        navigateTo('/culturepanel');
-      });
-    }
     nuxtApp.runWithContext(() => {
-      navigateTo('/admin');
+      navigateTo('/waitroom');
     });
   }
 

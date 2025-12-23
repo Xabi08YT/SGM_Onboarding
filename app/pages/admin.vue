@@ -4,12 +4,18 @@ import SlideEditor from "../../views/admin/slideEditor.vue";
 import EventEditor from "../../views/admin/eventEditor.vue";
 import UserEditor from "../../views/admin/userEditor.vue";
 
+
+const runtimeConfig = useRuntimeConfig();
+const requestURL = useRequestURL();
+const rootUrl = requestURL.origin + runtimeConfig.app.baseURL.slice(0,-1);
+const nuxtApp = useNuxtApp();
+
 /**
  * Initializes the page
  * @returns {Promise<void>}
  */
 const init = async () => {
-  let loggedIn = await fetch("/sgm/api/v1/session");
+  let loggedIn = await fetch(`${rootUrl}/api/v1/session`);
 
   if (!loggedIn.ok) {
     return navigateTo("/login");
