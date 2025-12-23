@@ -1,8 +1,8 @@
 <script setup>
 import {Toaster} from "../components/ui/toast";
-import SlideEditor from "../views/admin/slideEditor.vue";
-import EventEditor from "../views/admin/eventEditor.vue";
-import UserEditor from "../views/admin/userEditor.vue";
+import SlideEditor from "../../views/admin/slideEditor.vue";
+import EventEditor from "../../views/admin/eventEditor.vue";
+import UserEditor from "../../views/admin/userEditor.vue";
 
 /**
  * Initializes the page

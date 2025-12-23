@@ -1,6 +1,6 @@
 <script setup>
 import {defineComponent, onMounted, onUnmounted, reactive} from "vue";
-import PlanningCard from "../components/PlanningCard.vue";
+import PlanningCard from "../app/components/PlanningCard.vue";
 import icals from "../icals.json";
 import {HyperplanningScheduler} from "@xabi08yt/iutgradignanhpscheduler";
 import hpSettings from "../hpSettings.json";

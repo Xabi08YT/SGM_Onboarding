@@ -18,5 +18,5 @@ onMounted(async () => {
 </template>
 
 <style>
-@import "swagger-ui-dist/swagger-ui.css";
+@import "../../node_modules/swagger-ui-dist/swagger-ui.css";
 </style>
