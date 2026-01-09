@@ -1,43 +1,41 @@
 # Guide de contribution au projet
 
-> IUT Onboarding est un projet entièrement porté par les étudiant de l'IUT Informatique de Bordeaux, il est donc vital de pouvoir assurer la relève et d'avoir un flux continu de mainteneurs.
-> C'est dans cette optique de pouvoir garantir un service continu que devenir contributeur du projet permet de prendre le flambeau et de pouvoir le passer aux futurs promos d'étudiant, et pourquoi pas en rendant le projet encore meilleur au passage.
+> IUT Onboarding est un projet entièrement porté par les étudiants de l'IUT Informatique de Bordeaux, il est donc vital de pouvoir assurer la relève et d'avoir un flux continu de mainteneurs.
+> C'est dans cette optique de pouvoir garantir un service continu que devenir contributeur du projet permet de prendre le flambeau et de pouvoir le passer aux futures promos d'étudiant, et pourquoi pas en rendant le projet encore meilleur au passage.
 
 ## Avant de commencer
 
-Ce projet à été migré de VueJS vanilla vers Nuxt. De ce fait, des fonction de routage, import de font et SSR (Server Side Rendering) ont été ajoutée. Pour plus d'information, rendez-vous sur [le site officiel de nuxt](https://nuxt.com/). Tenez compte que nuxt permet l'ajout de plugins ! Cela permet d'importer des fonts depuis google fonts ou encore d'optimiser les images (Chose qu'il va falloir mettre en place).
+Ce projet à été migré de VueJS vanilla vers Nuxt. De ce fait, des fonctions de routage, import de fonts et SSR (Server Side Rendering) ont été ajoutée. Pour plus d'information, rendez-vous sur [le site officiel de nuxt](https://nuxt.com/). Tenez compte que nuxt permet l'ajout de plugins ! Cela permet d'importer des fonts depuis google fonts ou encore d'optimiser les images (Chose qu'il va falloir mettre en place).
 
 ## Maintenir le projet
 
 Voici ce qu'il faut faire en tant que mainteneur pour que le projet perdure dans le temps :
 
 - S'assurer physiquement du bon fonctionnement de la télé, de son alimentation programmée, ainsi que de la raspberry PI.
-- S'assurer de la cohérence des planning et mettres à jour les sources Ical tous les semestres.
+- S'assurer de la cohérence des plannings et mettre à jour les sources Ical tous les semestres.
 - Pouvoir afficher de nouvelles vues comme par exemple les publicités lié au recrutement de mainteneurs ou au Discord de promo.
 - Connaître la structure du projet et être capable de l'enseigner.
 
 ## Installer le projet
 
-> Nécéssite d'avoir node.js installé
+> Nécéssite d'avoir bun installé
 
-0. Installer netlify cli : `npm install netlify-cli -g` (-g ne marchera pas à l'IUT)
-1. Clone le projet : `git clone git@github.com:gfroidcourt/iut-onboarding.git`
-2. Installer les dépendences : `npm install` (Dans le repertoire du projet)
-    - Si vue.js n'est pas installé : `npm i -g @vue` puis `npm i -g @vue/cli` puis `npm i -g netlify`
-    - Si nuxt ou nuxi n'est pas installé: `npm i -g nuxi`
+0. [Installer bun](https://bun.sh)
+1. Cloner le projet : `git clone git@github.com:Xabi08YT/SGM_Onboarding.git`
+2. Installer les dépendences : `bun i` (Dans le repertoire du projet)
 3. Extensions vscode :
     - vetur (Pour vue.js).
     - eslint (Pour les convention de code).
+    - Nuxt (pour le framework)
 
 ## Lancer le serveur de développement
 
-- `netlify dev`
-    - ouvrir l'url indiquée dans le terminal  
+- `bun --bun run dev` puis ouvrir l'url indiqué dans le terminal
 
 ## Tester le build en local
 
-- Lancer le build avec `npm run build`
-- Puis lancer le serveur aver `npm run start`
+- Lancer le build avec `bun --bun run build`
+- Puis lancer le serveur aver `bun --bun run start`
 
 ## Franglais (Conventions de nommage):
 
@@ -52,7 +50,7 @@ Voici ce qu'il faut faire en tant que mainteneur pour que le projet perdure dans
 0. [(Fork le proket)](https://github.com/gfroidcourt/iut-onboarding/fork)
 1. Créer une branche dédiée à la feature : `git checkout -b nom-branche`
 2. Développer la feature. `sudo code --with-talent`
-3. Créer une commit : `git add -A` puis `git commit -m "Message de commit"`
+3. Créer une commit : `git add -A` puis `git commit -m "Message de commit"` Le signer avec -S est recommandé.
 4. Upstream et push : `git push -u origin nom-branche`
 5. Créer une [pull request](https://github.com/gfroidcourt/iut-onboarding/pulls)
     - Nom valide (Correspond a la feature ajoutée).
@@ -61,6 +59,8 @@ Voici ce qu'il faut faire en tant que mainteneur pour que le projet perdure dans
     - Assigner au moins 2 reviewers.
 
 ## Structure du projet
+
+A REFAIRE
 
  - assets : Comprends les fichier et fonts utilisées uniquement par le serveur.
  - classes: Stocke les classes nécessaires au fonctionnement du projets
@@ -72,16 +72,11 @@ Voici ce qu'il faut faire en tant que mainteneur pour que le projet perdure dans
  - tools: Dossier comprenant un outil pour générer automatiquement le fichier icals.js
  - view: Dossier comprenant toutes les slides affichée a la vue du client. Ces slides sont souvent composées de composants contenus dans components.
  - app.vue: Point d'entrée affiché au client gérant l'affichage de toutes les slides
- - api.js: Fichier comprenant des fonction pour fetch les apis de TBM, de la Météo etc...
- - icals.json: Contient les identifiants pour récupérer les fichiers icals depuis Hyperplanning
  - nuxt.config.js: Configuration du projet nuxt. Permet d'importer des fonts depuis google pour tout le projet. Cf contenu de ce fichier.
 
 ## Déployer le projet
 
-Le déploiement du projet est entièrement automatique grace à
- netlify. Dès qu'une pull-request est merge, la feature associée sera disponible sur le site dans les minutes qui suivent.
- 
- > Attention le site doit etre rechargé et donc la télé doit être débranchée/rebranchée
+Le déploiement est géré par CI/CD et ne peut être modifié facilement.
 
 ***
 
