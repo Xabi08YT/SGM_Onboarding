@@ -14,6 +14,7 @@ const defaultSlides = [
 const defaultConfigs = [
   {key: "HPVersion", value:"2025.5.6"},
   {key: "HPIcals", value:"Undefined"},
+  {key: "HPMode", value: "ROOM"}
 ]
 
 function createRandomString(length) {

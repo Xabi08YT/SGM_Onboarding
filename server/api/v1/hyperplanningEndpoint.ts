@@ -70,10 +70,11 @@ export default defineEventHandler(async (event) => {
         case "GET":
             let hp_version: PrismaKeyValue|null = await getConfigValue("HPVersion");
             let hp_icals: PrismaKeyValue|null = await getConfigValue("HPIcals");
+            let hp_mode: PrismaKeyValue|null = await getConfigValue("HPMode")
 
-            return new Response(JSON.stringify({version: hp_version, icals: hp_icals}), {status: 200});
+            return new Response(JSON.stringify({version: hp_version, icals: hp_icals,mode:hp_mode}), {status: 200});
         case "PUT":
-            let token: string = parseCookies(event)?.onboardingToken
+            let token: string = parseCookies(event)?.onboardingToken as string
             if (await verifyToken(token) === false) {
                 return new Response(JSON.stringify({message: "Invalid token"}), {status: 401});
             }
@@ -90,6 +91,7 @@ export default defineEventHandler(async (event) => {
             try {
                 await updateConfigValue({key: "HPVersion", value: JSON.stringify(parsed.version)});
                 await updateConfigValue({key: "HPIcals", value: JSON.stringify(parsed.icals)})
+                await updateConfigValue({key: "HPMode", value: JSON.stringify(parsed.mode)})
                 return new Response(JSON.stringify({message: "Success"}), {status: 200});
             } catch (error) {
                 return new Response(JSON.stringify({message: "Internal server error: Request could not be executed. The request may be invalid or the server encountered a problem."}), {status: 500});
